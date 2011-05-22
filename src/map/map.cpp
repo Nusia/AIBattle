@@ -37,6 +37,8 @@ Map::Map()
 
 void Map::draw()
 {
+	glClear( GL_COLOR_BUFFER_BIT );
+
 	glPushMatrix();
 	glTranslatef( -0.5f, 0.f, 0.f );
 	for( int col = 0; col < MAP_COLS; ++col )
