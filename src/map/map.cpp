@@ -37,6 +37,8 @@ Map::Map()
 
 void Map::draw()
 {
+	glPushMatrix();
+	glTranslatef( -0.5f, 0.f, 0.f );
 	for( int col = 0; col < MAP_COLS; ++col )
 	{
 		for( int row = 0; row < MAP_ROWS; ++row )
@@ -58,8 +60,7 @@ void Map::draw()
 			glEnd();
 		}
 	}
-	//Reset
-	glLoadIdentity();
+	glPopMatrix();
 }
 
 void Map::toggle_active_cell( int x, int y )
