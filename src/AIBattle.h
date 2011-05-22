@@ -10,8 +10,8 @@ private:
 	int win_width;
 	int win_height;
 
-	int SCREEN_BPP;
-	int FRAMES_PER_SECOND;
+	const int SCREEN_BPP;
+	const int FRAMES_PER_SECOND;
 
 	void init_GL();
 	void init();
@@ -20,5 +20,5 @@ public:
 	AIBattle();
 	void handle_event( SDL_Event *event );
 	void update();
-	void draw();
+	void draw() const;
 };

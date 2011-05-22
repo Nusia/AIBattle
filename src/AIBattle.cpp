@@ -1,11 +1,10 @@
 #include "AIBattle.h"
 
-AIBattle::AIBattle()
+AIBattle::AIBattle() :
+SCREEN_BPP(32), FRAMES_PER_SECOND(60)
 {
 	win_width = 800;
 	win_height = 600;
-	SCREEN_BPP = 32;
-	FRAMES_PER_SECOND = 60;
 
 	Map map;
 	SDL_Event event;
@@ -77,12 +76,11 @@ void AIBattle::handle_event( SDL_Event *event )
 	}
 }
 
-void AIBattle::draw()
+void AIBattle::draw() const
 {
 	glClear( GL_COLOR_BUFFER_BIT );
 
 	map.draw();
 
-	//Update Screen
 	SDL_GL_SwapBuffers();
 }

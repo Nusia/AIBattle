@@ -13,13 +13,14 @@
 class Map
 {
 private:
-	std::vector< std::vector< int > > _map;
+	enum{ WALKABLE, WALL, UNIT };
+	std::vector< std::vector<int> > _map;
 
 public:
 	Map();
-	void draw();
+	void draw() const;
 
 	void toggle_active_cell( int x, int y );
 
-	std::vector< std::vector< int > > get_map() { return _map; }
+	std::vector<std::vector<int>> get_map() const { return _map; }
 };

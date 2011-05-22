@@ -11,31 +11,32 @@ Map::Map()
 		_map.push_back( tmp );
 	}
 
-	_map[2][0] = 1;
-	_map[2][1] = 1;
-	_map[2][2] = 1;
-	_map[2][3] = 1;
-	_map[3][3] = 1;
-	_map[2][4] = 1;
-	_map[3][6] = 1;
-	_map[3][7] = 1;
-	_map[3][8] = 1;
-	_map[3][9] = 1;
-	_map[5][5] = 1;
-	_map[6][5] = 1;
-	_map[5][6] = 1;
-	_map[6][6] = 1;
-	_map[4][6] = 1;
-	_map[1][4] = 1;
-	_map[1][5] = 1;
-	_map[1][6] = 1;
-	_map[1][7] = 1;
-	_map[7][4] = 1;
-	_map[8][3] = 1;
-	_map[9][6] = 1;
+	_map[2][0] = WALL;
+	_map[2][1] = WALL;
+	_map[2][2] = WALL;
+	_map[2][3] = WALL;
+	_map[3][3] = WALL;
+	_map[2][4] = WALL;
+	_map[3][6] = WALL;
+	_map[3][7] = WALL;
+	_map[3][8] = WALL;
+	_map[3][9] = WALL;
+	_map[5][5] = WALL;
+	_map[6][5] = WALL;
+	_map[5][6] = WALL;
+	_map[6][6] = WALL;
+	_map[4][6] = WALL;
+	_map[1][4] = WALL;
+	_map[1][5] = WALL;
+	_map[1][6] = WALL;
+	_map[1][7] = WALL;
+	_map[7][4] = WALL;
+	_map[8][3] = WALL;
+	_map[9][6] = WALL;
+	_map[30][15] = UNIT;
 }
 
-void Map::draw()
+void Map::draw() const
 {
 	glClear( GL_COLOR_BUFFER_BIT );
 
@@ -45,13 +46,17 @@ void Map::draw()
 	{
 		for( int row = 0; row < MAP_ROWS; ++row )
 		{
-			if( _map[col][row] == 0 )
+			switch( _map[col][row] )
 			{
-				glColor3f( 0.f, 1.f, 0.f );
-			}
-			else
-			{
+			case WALL: 
 				glColor3f( 1.f, 0.f, 0.f );
+				break;
+			case WALKABLE:
+				glColor3f( 0.f, 1.f, 0.f );
+				break;
+			case UNIT:
+				glColor3f( 0.f, 0.f, 1.f );
+				break;
 			}
 
 			glBegin( GL_POLYGON );
@@ -68,5 +73,5 @@ void Map::draw()
 void Map::toggle_active_cell( int x, int y )
 {
 	if( x < MAP_COLS && y < MAP_ROWS )
-		_map[x][y] = 1;
+		_map[x][y] = WALL;
 }
