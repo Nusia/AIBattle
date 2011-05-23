@@ -64,15 +64,24 @@ void AIBattle::init()
 
 void AIBattle::handle_event( SDL_Event *event )
 {
+	AStar a_star( map.get_map() );
+	std::vector< Position > tmp_list;
 	if( event->type == SDL_MOUSEBUTTONDOWN )
 	{
 		int x_cell = floorf( (event->motion.x / ((float)(MAP_COLS*TILE_WIDTH) / MAP_COLS) ) );
 		int y_cell = floorf( (event->motion.y / ((float)(MAP_ROWS*TILE_HEIGHT) / MAP_ROWS) ) );
-		map.toggle_active_cell( x_cell, y_cell );
+		tmp_list = a_star.get_best_path( 
+			Position( 3, 3 ),
+			Position( x_cell, y_cell ) );
+		//map.toggle_active_cell( x_cell, y_cell );
 		std::cout << 
 			"Mouse button pressed: " << 
 			x_cell << ", " << 
 			y_cell << "\n";
+
+		map.set_path( tmp_list );
+		//for( int i = 0; i < tmp_list.size(); ++i )
+		//	std::cout << tmp_list[i].x << ", " << tmp_list[0].y << "\n";
 	}
 }
 

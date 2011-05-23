@@ -2,6 +2,7 @@
 
 #include "Math.h"
 #include "map/map.h"
+#include "AI/a_star.h"
 
 class AIBattle
 {

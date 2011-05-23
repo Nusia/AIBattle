@@ -11,29 +11,52 @@ Map::Map()
 		_map.push_back( tmp );
 	}
 
-	_map[2][0] = WALL;
-	_map[2][1] = WALL;
-	_map[2][2] = WALL;
-	_map[2][3] = WALL;
-	_map[3][3] = WALL;
-	_map[2][4] = WALL;
-	_map[3][6] = WALL;
-	_map[3][7] = WALL;
-	_map[3][8] = WALL;
-	_map[3][9] = WALL;
-	_map[5][5] = WALL;
-	_map[6][5] = WALL;
-	_map[5][6] = WALL;
-	_map[6][6] = WALL;
-	_map[4][6] = WALL;
-	_map[1][4] = WALL;
-	_map[1][5] = WALL;
-	_map[1][6] = WALL;
-	_map[1][7] = WALL;
-	_map[7][4] = WALL;
-	_map[8][3] = WALL;
-	_map[9][6] = WALL;
-	_map[30][15] = UNIT;
+	_map[19][16] = WALL;
+
+	_map[20][20] = WALL;
+	_map[21][20] = WALL;
+	_map[22][20] = WALL;
+	_map[23][20] = WALL;
+
+	_map[20][21] = WALL;
+	_map[21][21] = WALL;
+	_map[22][21] = WALL;
+	_map[23][21] = WALL;
+
+	_map[20][22] = WALL;
+	_map[21][22] = WALL;
+	_map[22][22] = WALL;
+	_map[23][22] = WALL;
+
+	_map[20][23] = WALL;
+	_map[21][23] = WALL;
+	_map[22][23] = WALL;
+	_map[23][23] = WALL;
+
+	_map[10][10] = WALL;
+	_map[11][10] = WALL;
+	_map[12][10] = WALL;
+	_map[13][10] = WALL;
+
+	_map[10][11] = WALL;
+	_map[11][11] = WALL;
+	_map[12][11] = WALL;
+	_map[13][11] = WALL;
+
+	_map[10][12] = WALL;
+	_map[11][12] = WALL;
+	_map[12][12] = WALL;
+	_map[13][12] = WALL;
+
+	_map[10][13] = WALL;
+	_map[11][13] = WALL;
+	_map[12][13] = WALL;
+	_map[13][13] = WALL;
+
+	_map[58][40] = WALL;
+	_map[58][41] = WALL;
+	_map[58][42] = WALL;
+	_map[58][43] = WALL;
 }
 
 void Map::draw() const
@@ -67,11 +90,28 @@ void Map::draw() const
 			glEnd();
 		}
 	}
+
+	glColor3f( 0.f, 0.f, 0.f );
+	for( int i = 0; i < _path.size(); ++i )
+	{
+		glBegin( GL_POLYGON );
+		glVertex3f( _path[i].x * TILE_WIDTH, _path[i].y * TILE_HEIGHT, 0.f );
+		glVertex3f( _path[i].x * TILE_WIDTH, (_path[i].y+1) * TILE_HEIGHT, 0.f );
+		glVertex3f( (_path[i].x+1) * TILE_WIDTH, (_path[i].y+1) * TILE_HEIGHT, 0.f );
+		glVertex3f( (_path[i].x+1) * TILE_WIDTH, _path[i].y * TILE_HEIGHT, 0.f );
+		glEnd();
+
+	}
 	glPopMatrix();
 }
 
 void Map::toggle_active_cell( int x, int y )
 {
 	if( x < MAP_COLS && y < MAP_ROWS )
-		_map[x][y] = WALL;
+	{
+		if( _map[x][y] == WALKABLE )
+			_map[x][y] = WALL;
+		else if( _map[x][y] == WALL )
+			_map[x][y] = WALKABLE;
+	}
 }

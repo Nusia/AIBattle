@@ -133,10 +133,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib SDLmain.lib"
+				AdditionalDependencies="SDL.lib SDLmain.lib GlU32.Lib OpenGL32.Lib glut32.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -173,15 +173,91 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\src\AIBattle.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\main.cpp"
 				>
 			</File>
+			<Filter
+				Name="map"
+				>
+				<File
+					RelativePath="..\src\map\map.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="units"
+				>
+				<File
+					RelativePath="..\src\units\soldier.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="AI"
+				>
+				<File
+					RelativePath="..\src\AI\a_star.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="helpers"
+				>
+				<File
+					RelativePath="..\src\helpers\position.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\src\AIBattle.h"
+				>
+			</File>
+			<Filter
+				Name="map"
+				>
+				<File
+					RelativePath="..\src\map\map.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="units"
+				>
+				<File
+					RelativePath="..\src\units\soldier.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="helpers"
+				>
+				<File
+					RelativePath="..\src\helpers\position.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="AI"
+				>
+				<File
+					RelativePath="..\src\AI\a_star.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\AI\a_star_node.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -189,6 +265,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
+		<File
+			RelativePath="..\resources\saved_map_01.xml"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
