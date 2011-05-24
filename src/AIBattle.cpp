@@ -3,8 +3,8 @@
 AIBattle::AIBattle() :
 SCREEN_BPP(32), FRAMES_PER_SECOND(60)
 {
-	win_width = 800;
-	win_height = 600;
+	win_width = 1024;
+	win_height = 768;
 	_unit_pos = Position( 3, 3 );
 
 	Map map;
