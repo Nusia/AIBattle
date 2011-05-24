@@ -5,6 +5,7 @@ SCREEN_BPP(32), FRAMES_PER_SECOND(60)
 {
 	win_width = 800;
 	win_height = 600;
+	_unit_pos = Position( 3, 3 );
 
 	Map map;
 	SDL_Event event;
@@ -13,6 +14,7 @@ SCREEN_BPP(32), FRAMES_PER_SECOND(60)
 	bool quit = false;
 	while( !quit )
 	{
+		update();
 		while( SDL_PollEvent( &event ) )
 		{
 			if( event.type == SDL_QUIT || 
@@ -23,7 +25,6 @@ SCREEN_BPP(32), FRAMES_PER_SECOND(60)
 			else
 				handle_event( &event );
 		}
-
 		draw();
 	}
 
@@ -50,10 +51,14 @@ void AIBattle::init_GL()
 void AIBattle::init()
 {
     //Initialize SDL
-    SDL_Init( SDL_INIT_EVERYTHING );
+	SDL_Init(SDL_INIT_VIDEO);
+
+	SDL_Init( SDL_INIT_EVERYTHING );
+
+	atexit(SDL_Quit);
 
     //Create Window
-    SDL_SetVideoMode( win_width, win_height, SCREEN_BPP, SDL_OPENGL );
+	screen = SDL_SetVideoMode( win_width, win_height, SCREEN_BPP, SDL_DOUBLEBUF | SDL_SWSURFACE );
 
     //Initialize OpenGL
     init_GL();
@@ -62,34 +67,54 @@ void AIBattle::init()
     SDL_WM_SetCaption( "AIBattle", NULL );
 }
 
+void AIBattle::update()
+{
+	if( !_tmp_list.empty() )
+	{
+		_unit_pos = _tmp_list.front();
+		_tmp_list.erase( _tmp_list.begin() );
+	}
+	map.set_unit_pos( _unit_pos );
+}
+
 void AIBattle::handle_event( SDL_Event *event )
 {
 	AStar a_star( map.get_map() );
-	std::vector< Position > tmp_list;
 	if( event->type == SDL_MOUSEBUTTONDOWN )
 	{
-		int x_cell = floorf( (event->motion.x / ((float)(MAP_COLS*TILE_WIDTH) / MAP_COLS) ) );
-		int y_cell = floorf( (event->motion.y / ((float)(MAP_ROWS*TILE_HEIGHT) / MAP_ROWS) ) );
-		tmp_list = a_star.get_best_path( 
-			Position( 3, 3 ),
-			Position( x_cell, y_cell ) );
-		//map.toggle_active_cell( x_cell, y_cell );
+		Position cell_pos;
+		cell_pos.x = floorf(
+			( (event->motion.x + map.get_cam_pos().x) / 
+			( (float)(MAP_COLS*TILE_WIDTH) / MAP_COLS) ) );
+
+		cell_pos.y = floorf( 
+			((event->motion.y + map.get_cam_pos().y) / 
+			((float)(MAP_ROWS*TILE_HEIGHT*0.75) / MAP_ROWS) ) );
+
+		if( map.is_pos_walkable( cell_pos ) )
+		{
+			_tmp_list.clear();
+			_tmp_list = a_star.get_best_path( cell_pos, _unit_pos );
+			_tmp_list.push_back( cell_pos );
+		}
+
 		std::cout << 
 			"Mouse button pressed: " << 
-			x_cell << ", " << 
-			y_cell << "\n";
+			cell_pos.x << ", " << 
+			cell_pos.y << "\n";
 
-		map.set_path( tmp_list );
 		//for( int i = 0; i < tmp_list.size(); ++i )
 		//	std::cout << tmp_list[i].x << ", " << tmp_list[0].y << "\n";
 	}
+	map.handle_event( event );
 }
 
-void AIBattle::draw() const
+void AIBattle::draw()
 {
 	glClear( GL_COLOR_BUFFER_BIT );
 
-	map.draw();
+	map.draw( screen );
 
-	SDL_GL_SwapBuffers();
+	SDL_Flip( screen );
+	//SDL_GL_SwapBuffers();
 }

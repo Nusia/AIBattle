@@ -15,6 +15,8 @@ AStar::AStar( std::vector< std::vector<int> > map )
 
 std::vector<Position> AStar::get_best_path( Position start_pos, Position goal_pos )
 {
+	std::cout << "Calculating new path using A*...\n";
+
 	_start_pos = start_pos;
 	_goal_pos = goal_pos;
 	open_list.push_back( start_pos );
@@ -93,6 +95,8 @@ std::vector<Position> AStar::get_best_path( Position start_pos, Position goal_po
 		}
 	}
 	reconstuct_path(current_node_coord);
+
+	std::cout << "New path found.\n";
 	return complete_path;
 }
 
