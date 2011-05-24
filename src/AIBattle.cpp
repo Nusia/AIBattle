@@ -83,11 +83,11 @@ void AIBattle::handle_event( SDL_Event *event )
 	if( event->type == SDL_MOUSEBUTTONDOWN )
 	{
 		Position cell_pos;
-		cell_pos.x = floorf(
+		cell_pos.x = (int)floorf(
 			( (event->motion.x + map.get_cam_pos().x) / 
 			( (float)(MAP_COLS*TILE_WIDTH) / MAP_COLS) ) );
 
-		cell_pos.y = floorf( 
+		cell_pos.y = (int)floorf( 
 			((event->motion.y + map.get_cam_pos().y) / 
 			((float)(MAP_ROWS*TILE_HEIGHT*0.75) / MAP_ROWS) ) );
 
@@ -100,11 +100,7 @@ void AIBattle::handle_event( SDL_Event *event )
 
 		std::cout << 
 			"Mouse button pressed: " << 
-			cell_pos.x << ", " << 
-			cell_pos.y << "\n";
-
-		//for( int i = 0; i < tmp_list.size(); ++i )
-		//	std::cout << tmp_list[i].x << ", " << tmp_list[0].y << "\n";
+			cell_pos << "\n";
 	}
 	map.handle_event( event );
 }

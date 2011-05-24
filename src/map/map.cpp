@@ -7,7 +7,15 @@ Map::Map()
 	character_basic = load_image("../resources/character_basic.png");
 	stone_tile_low = load_image("../resources/stone_tile_low_64.png");
 	stone_tile_high = load_image("../resources/stone_tile_high_64.png");
-	//load_image( "../resources/stone_tile_low_64_bmp.bmp" );
+
+	shadow_north_east = load_image("../resources/shadow_north_east.png");
+	shadow_east = load_image("../resources/shadow_east.png");
+	shadow_south_east = load_image("../resources/shadow_south_east.png");	
+	shadow_south = load_image("../resources/shadow_south.png");
+	shadow_south_west = load_image("../resources/shadow_south_west.png");
+	shadow_west = load_image("../resources/shadow_west.png");
+	shadow_north_west = load_image("../resources/shadow_north_west.png");
+	shadow_north = load_image("../resources/shadow_north.png");
 
 	std::vector<int> tmp;
 	for( int col = 0; col < MAP_COLS; ++col )
@@ -84,22 +92,17 @@ Map::Map()
 	_map[58][42] = WALL;
 	_map[58][43] = WALL;
 }
-
+//
+void Map::update()
+{
+}
+//
 void Map::draw( SDL_Surface* screen )
 {
-
-
-	/*glClear( GL_COLOR_BUFFER_BIT );
-	glPushMatrix();
-	glTranslatef( -_cam_pos.x, -_cam_pos.y, 0.f );*/
-
-	//glEnable(GL_TEXTURE_2D);
-	//glBindTexture( GL_TEXTURE_2D, texture );
-
 	SDL_Rect srect, drect;
 	srect.x = 0;
 	srect.y = 0;
-	srect.w = TILE_WIDTH;
+	srect.w = 64;
 	drect.w = TILE_WIDTH;
 
 	for( int col = 0; col < MAP_COLS; ++col )
@@ -107,98 +110,128 @@ void Map::draw( SDL_Surface* screen )
 		for( int row = 0; row < MAP_ROWS; ++row )
 		{
 			srect.h = 64;
-			drect.h = 64;
+			drect.h = TILE_HEIGHT;
 			drect.x = col * TILE_WIDTH - _cam_pos.x; 
-			drect.y = (row * TILE_HEIGHT * 0.75 - _cam_pos.y);
+			drect.y = (Sint16)(row * TILE_HEIGHT * 0.75 - _cam_pos.y);
 
 			switch( _map[col][row] )
 			{
 			case WALL: 
 				srect.h = 128;
-				drect.h = 128;
-				drect.y -= 64;
+				drect.h = TILE_HEIGHT*2;
+				drect.y -= TILE_HEIGHT;
 				SDL_BlitSurface( stone_tile_high, &srect, screen, &drect );
+
+				try
+				{
+					if( _map[col-1][row] != WALL && 
+						_map[col][row-1] != WALL )
+					{
+						drect.x = (col-1) * TILE_WIDTH - _cam_pos.x;
+						drect.y = (Sint16)((row-1) * TILE_HEIGHT * 0.75 - _cam_pos.y);
+						SDL_BlitSurface( shadow_south_east, &srect, screen, &drect );
+					}
+					if( _map[col-1][row] != WALL )
+					{
+						srect.h = TILE_HEIGHT*1.35;
+						drect.h = TILE_HEIGHT*1.35;
+						drect.x = (col-1) * TILE_WIDTH - _cam_pos.x;
+						drect.y = (Sint16)((row-1)*TILE_HEIGHT*0.75 - _cam_pos.y) - 2;
+						SDL_BlitSurface( shadow_east, &srect, screen, &drect );
+					}
+					if( _map[col][row-1] != WALL )
+					{
+						drect.x = (col) * TILE_WIDTH - _cam_pos.x;
+						drect.y = (Sint16)((row-2) * TILE_HEIGHT * 0.75 - _cam_pos.y) - TILE_HEIGHT*0.15;
+						SDL_BlitSurface( shadow_south, &srect, screen, &drect );
+					}
+					if( _map[col-1][row+1] != WALL && 
+						_map[col][row+1] != WALL &&
+						_map[col-1][row] != WALL)
+					{
+						drect.x = (col-1) * TILE_WIDTH - _cam_pos.x;
+						drect.y = (Sint16)(row * TILE_HEIGHT * 0.75 - _cam_pos.y) -2;
+						SDL_BlitSurface( shadow_north_east, &srect, screen, &drect );
+					}
+				}
+				catch( std::exception e )
+				{
+					
+				}
 				break;
 
 			case WALKABLE:
-				drect.y -= 14;
+				drect.h = TILE_HEIGHT;
+				drect.y -= (Sint16)(TILE_HEIGHT * 0.25);
 				SDL_BlitSurface( stone_tile_low, &srect, screen, &drect );
+
+				if( row > 0 && _map[col][row-1] == WALL )
+				{
+					drect.y = (Sint16)(row * TILE_HEIGHT * 0.75 - _cam_pos.y) - TILE_HEIGHT*0.8;
+					SDL_BlitSurface( shadow_north, &srect, screen, &drect );
+				}
+				if( col > 0 && _map[col-1][row] == WALL )
+				{
+					srect.h = 128;
+					drect.h = 128;
+					drect.y = (Sint16)((row-1) * TILE_HEIGHT * 0.75 - _cam_pos.y) -2;
+					SDL_BlitSurface( shadow_west, &srect, screen, &drect );
+				}
+				if( col > 0 && row > 0 && 
+					_map[col-1][row-1] == WALL && 
+					_map[col-1][row] != WALL &&
+					_map[col][row-1] != WALL)
+				{
+					drect.y = (Sint16)(row * TILE_HEIGHT * 0.75 - _cam_pos.y) - TILE_HEIGHT*0.8;
+					SDL_BlitSurface( shadow_north_west, &srect, screen, &drect );
+				}
+				if( col > 0 && row < MAP_ROWS-1 && 
+					_map[col-1][row+1] == WALL && 
+					_map[col-1][row] != WALL)
+				{
+					srect.h = 128;
+					drect.h = 128;
+					drect.y = (Sint16)((row-1) * TILE_HEIGHT * 0.75 - _cam_pos.y) - TILE_HEIGHT*0.2;
+					SDL_BlitSurface( shadow_south_west, &srect, screen, &drect );
+				}
+
 				break;
 			}
 
 			if( _unit_pos.x == col && _unit_pos.y == row )
 			{
 				srect.h = 64;
-				drect.h = 64;
-				drect.y = 
+				drect.h = TILE_HEIGHT;
+				drect.y = (Sint16)(
 					(row * TILE_HEIGHT * 0.75 - _cam_pos.y) - 
-					TILE_HEIGHT * 0.5;
+					(TILE_HEIGHT * 0.5));
 				SDL_BlitSurface( character_basic, &srect, screen, &drect );
 			}
-
 		}
 	}
-
-	//glColor3f( 0.f, 1.f, 0.f );
-	//for( int i = 0; i < _path.size(); ++i )
-	//{
-	//	glBegin( GL_POLYGON );
-	//	glVertex3f( _path[i].x * TILE_WIDTH, _path[i].y * TILE_HEIGHT, 0.f );
-	//	glVertex3f( _path[i].x * TILE_WIDTH, (_path[i].y+1) * TILE_HEIGHT, 0.f );
-	//	glVertex3f( (_path[i].x+1) * TILE_WIDTH, (_path[i].y+1) * TILE_HEIGHT, 0.f );
-	//	glVertex3f( (_path[i].x+1) * TILE_WIDTH, _path[i].y * TILE_HEIGHT, 0.f );
-	//	glEnd();
-	//}
-
-	//glColor3f( 0.f, 0.f, 0.f );
-	//for( int col = 0; col < MAP_COLS; ++col )
-	//{
-	//	glBegin( GL_LINES );
-	//	glVertex3f( col * TILE_WIDTH, 0.f, 0.f );
-	//	glVertex3f( col * TILE_WIDTH, MAP_ROWS * TILE_HEIGHT, 0.f );
-	//	glEnd();
-	//}
-	//for( int row = 0; row < MAP_ROWS; ++row )
-	//{
-	//	glBegin( GL_LINES );
-	//	glVertex3f( 0.f, row * TILE_HEIGHT, 0.f );
-	//	glVertex3f( MAP_COLS * TILE_WIDTH, row * TILE_HEIGHT, 0.f );
-	//	glEnd();
-	//}
-
-	glPopMatrix();
 }
-
-void Map::toggle_active_cell( int x, int y )
-{
-	if( x < MAP_COLS && y < MAP_ROWS )
-	{
-		if( _map[x][y] == WALKABLE )
-			_map[x][y] = WALL;
-		else if( _map[x][y] == WALL )
-			_map[x][y] = WALKABLE;
-	}
-}
-
+//
 SDL_Surface* Map::load_image( char *file ) 
 {
 	SDL_Surface *tmp;
 	tmp = IMG_Load(file);
 
 	if (tmp == NULL) {
-		std::cout << "Error: '%s' could not be opened: " << file << IMG_GetError() << "\n";
+		std::cout << "Error: Could not open " << file << ". " << IMG_GetError() << "\n";
 	} else {
 		if(SDL_SetColorKey(tmp, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(tmp->format, COLORKEY)) == -1)
 			std::cout << "Warning: colorkey will not be used, reason: " << SDL_GetError() << "\n";
 	}
 	return tmp;
 }
-
+//
 bool Map::is_pos_walkable( Position pos )
 {
 	return _map[pos.x][pos.y] == WALKABLE;
 }
-
+//
+//  TMP *****
+//
 void Map::handle_event( SDL_Event *event )
 {
 	if( event->type == SDL_KEYDOWN )

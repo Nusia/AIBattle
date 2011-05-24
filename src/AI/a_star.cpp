@@ -3,8 +3,8 @@
 AStar::AStar( std::vector< std::vector<int> > map )
 {
 	std::vector<int> tmp;
-	for( int col = 0; col < map.size(); ++col )
-		for( int row = 0; row < map[0].size(); ++row )
+	for( unsigned int col = 0; col < map.size(); ++col )
+		for( unsigned int row = 0; row < map[0].size(); ++row )
 		{
 			path_map[col][row] = new AStarNode( 
 				Position(col, row), 
@@ -15,7 +15,7 @@ AStar::AStar( std::vector< std::vector<int> > map )
 
 std::vector<Position> AStar::get_best_path( Position start_pos, Position goal_pos )
 {
-	std::cout << "Calculating new path using A*...\n";
+	std::cout << "Calculating new path using A*\n";
 
 	_start_pos = start_pos;
 	_goal_pos = goal_pos;
@@ -48,7 +48,7 @@ std::vector<Position> AStar::get_best_path( Position start_pos, Position goal_po
 
 		//Remove from open_list
 		int tmpPos;
-		for (int i = 0; i < open_list.size(); ++i)
+		for ( unsigned int i = 0; i < open_list.size(); ++i)
 		{
 			if(open_list[i] == current_node_coord)
 			{
@@ -67,7 +67,7 @@ std::vector<Position> AStar::get_best_path( Position start_pos, Position goal_po
 				//Get tentative g score
 				int tentative_g_score = 
 					g_score[current_node_coord.x][current_node_coord.y] + 
-					distance_between( current_node_coord, (*y_node_coord) );
+					(int)distance_between( current_node_coord, (*y_node_coord) );
 
 				//Add to open list if not already there.
 				if( !is_coord_in_open_list( (*y_node_coord) ))
@@ -106,7 +106,7 @@ int AStar::heuristic_estimate_of_distance (Position start, Position goal)
 	return abs(start.x - goal.x + start.y - goal.y);
 }
 
-int AStar::distance_between (Position coord_1, Position coord_2 )
+double AStar::distance_between (Position coord_1, Position coord_2 )
 {
 	//Calculate the "real" distance. 10 if side by side, 14 if diagonal
 	if( coord_1.x == coord_2.x)

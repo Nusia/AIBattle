@@ -23,7 +23,7 @@ private:
 
 
 	int heuristic_estimate_of_distance (Position start, Position goal);
-	int distance_between (Position coord_1, Position coord_2 );
+	double distance_between (Position coord_1, Position coord_2 );
 	Position get_lowest_f_in_open_list();
 	bool is_coord_in_complete_path( Position coord );
 	bool is_coord_in_open_list( Position coord );

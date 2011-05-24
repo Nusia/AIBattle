@@ -17,37 +17,46 @@
 class Map
 {
 private:
+	//Variables
+	//---------
 	std::vector< std::vector<int> > _map;
-	std::vector< Position > _path;
 	Position _unit_pos;
 	Position _cam_pos;
-
-	GLuint texture;
-	GLenum texture_format;
 
 	SDL_Surface* character_basic;
 	SDL_Surface* stone_tile_low;
 	SDL_Surface* stone_tile_high;
+	SDL_Surface* shadow_north_east;
+	SDL_Surface* shadow_east;
+	SDL_Surface* shadow_south_east;
+	SDL_Surface* shadow_south;
+	SDL_Surface* shadow_south_west;
+	SDL_Surface* shadow_west;
+	SDL_Surface* shadow_north_west;
+	SDL_Surface* shadow_north;
+
+	//Functions
+	//---------
+	SDL_Surface* load_image(char *file);
 
 public:
 	static const enum tile_type{ WALKABLE, WALL, UNIT };
 
 	Map();
+	void update();
 	void draw( SDL_Surface* screen );
-
-	void toggle_active_cell( int x, int y );
-
-	SDL_Surface* load_image(char *file);
 
 	bool is_pos_walkable( Position pos );
 
-	void set_path( std::vector< Position > path ) { _path = path; }
+	//Set & Get
+	void 
+		set_unit_pos( Position unit_pos ) { _unit_pos = unit_pos; }
 
-	void set_unit_pos( Position unit_pos ) { _unit_pos = unit_pos; }
+	std::vector<std::vector<int>> 
+		get_map() const { return _map; }
 
-	std::vector<std::vector<int>> get_map() const { return _map; }
-
-	Position get_cam_pos() { return _cam_pos; }
+	Position 
+		get_cam_pos() { return _cam_pos; }
 
 	//TMP
 	void handle_event( SDL_Event *event );

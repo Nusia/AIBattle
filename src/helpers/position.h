@@ -1,7 +1,11 @@
 #pragma once
 
+#include <iostream>
+
 class Position
 {
+	friend std::ostream& operator<<( std::ostream& os, const Position p );
+
 public:
 	int x, y;
 	Position(){};
@@ -9,4 +13,5 @@ public:
 
 	const bool operator==( const Position &p ) const;
 	const bool operator!=( const Position &p ) const;
+	//std::ostream& operator<<( std::ostream& os );
 };
