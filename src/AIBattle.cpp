@@ -6,14 +6,13 @@ SCREEN_BPP(32), FRAMES_PER_SECOND(60)
 	win_width = 1024;
 	win_height = 768;
 
-	Map map;
 	SDL_Event event;
 	init();
 
 	bool quit = false;
 	while( !quit )
 	{
-		update();
+		_game_state_manager.update();
 		while( SDL_PollEvent( &event ) )
 		{
 			if( event.type == SDL_QUIT || 
@@ -22,7 +21,7 @@ SCREEN_BPP(32), FRAMES_PER_SECOND(60)
 				)
 				quit = true;
 			else
-				handle_event( &event );
+				_game_state_manager.handle_input( &event );
 		}
 		draw();
 	}
@@ -66,44 +65,11 @@ void AIBattle::init()
     SDL_WM_SetCaption( "AIBattle", NULL );
 }
 
-void AIBattle::update()
-{
-	if( !_tmp_list.empty() )
-	{
-		map.set_player_01_pos( _tmp_list.front() );
-		_tmp_list.erase( _tmp_list.begin() );
-	}
-}
-
-void AIBattle::handle_event( SDL_Event *event )
-{
-	AStar a_star( map.get_map(), map.get_players_pos() );
-	if( event->type == SDL_MOUSEBUTTONDOWN )
-	{
-		Position cell_pos;
-		cell_pos.x = (int)floorf(
-			( (event->motion.x + map.get_cam_pos().x) / 
-			( (float)(MAP_COLS*TILE_WIDTH) / MAP_COLS) ) );
-
-		cell_pos.y = (int)floorf( 
-			((event->motion.y + map.get_cam_pos().y) / 
-			((float)(MAP_ROWS*TILE_HEIGHT*0.75) / MAP_ROWS) ) );
-
-		if( map.is_pos_walkable( cell_pos ) )
-		{
-			_tmp_list.clear();
-			_tmp_list = a_star.get_best_path( cell_pos, map.get_player_01_pos() );
-			_tmp_list.push_back( cell_pos );
-		}
-	}
-	map.handle_event( event );
-}
-
 void AIBattle::draw()
 {
 	glClear( GL_COLOR_BUFFER_BIT );
 
-	map.draw( screen );
+	_game_state_manager.draw( screen );
 
 	SDL_Flip( screen );
 	//SDL_GL_SwapBuffers();
