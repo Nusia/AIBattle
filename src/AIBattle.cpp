@@ -5,7 +5,6 @@ SCREEN_BPP(32), FRAMES_PER_SECOND(60)
 {
 	win_width = 1024;
 	win_height = 768;
-	_unit_pos = Position( 3, 3 );
 
 	Map map;
 	SDL_Event event;
@@ -71,15 +70,14 @@ void AIBattle::update()
 {
 	if( !_tmp_list.empty() )
 	{
-		_unit_pos = _tmp_list.front();
+		map.set_player_01_pos( _tmp_list.front() );
 		_tmp_list.erase( _tmp_list.begin() );
 	}
-	map.set_unit_pos( _unit_pos );
 }
 
 void AIBattle::handle_event( SDL_Event *event )
 {
-	AStar a_star( map.get_map() );
+	AStar a_star( map.get_map(), map.get_players_pos() );
 	if( event->type == SDL_MOUSEBUTTONDOWN )
 	{
 		Position cell_pos;
@@ -94,7 +92,7 @@ void AIBattle::handle_event( SDL_Event *event )
 		if( map.is_pos_walkable( cell_pos ) )
 		{
 			_tmp_list.clear();
-			_tmp_list = a_star.get_best_path( cell_pos, _unit_pos );
+			_tmp_list = a_star.get_best_path( cell_pos, map.get_player_01_pos() );
 			_tmp_list.push_back( cell_pos );
 		}
 

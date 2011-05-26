@@ -32,6 +32,6 @@ private:
 	std::vector<Position> get_neighbors(Position coordinate);
 
 public:
-	AStar( std::vector< std::vector<int> > map);
+	AStar( std::vector< std::vector<int> > map, std::vector<Position> units_list );
 	std::vector<Position> get_best_path( Position start_pos, Position goal_pos );
 };

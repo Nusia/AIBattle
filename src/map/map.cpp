@@ -3,8 +3,13 @@
 Map::Map()
 {
 	_cam_pos = Position(0, 0);
-	_unit_pos = Position( 4, 4 );
-	character_basic = load_image("../resources/character_basic.png");
+	_player_01_pos = Position( 0, 0 );
+	_player_01_pos = Position( 0, 1 );
+
+	load_map();
+
+	character_player_01 = load_image("../resources/character_basic_green.png");
+	character_player_02 = load_image("../resources/character_basic_red.png");
 	stone_tile_low = load_image("../resources/stone_tile_low_64.png");
 	stone_tile_high = load_image("../resources/stone_tile_high_64.png");
 
@@ -16,81 +21,6 @@ Map::Map()
 	shadow_west = load_image("../resources/shadow_west.png");
 	shadow_north_west = load_image("../resources/shadow_north_west.png");
 	shadow_north = load_image("../resources/shadow_north.png");
-
-	std::vector<int> tmp;
-	for( int col = 0; col < MAP_COLS; ++col )
-	{
-		tmp.clear();
-		for( int row = 0; row < MAP_ROWS; ++row ) 
-			tmp.push_back( 0 );
-		_map.push_back( tmp );
-	}
-
-	_map[5][5] = WALL;
-	_map[6][5] = WALL;
-
-	_map[4][5] = WALL;
-	_map[4][6] = WALL;
-	_map[4][7] = WALL;
-	_map[4][8] = WALL;
-
-	_map[8][6] = WALL;
-	_map[8][7] = WALL;
-	_map[8][8] = WALL;
-	_map[8][9] = WALL;
-
-	_map[9][6] = WALL;
-	_map[9][9] = WALL;
-
-	_map[10][6] = WALL;
-	_map[10][9] = WALL;
-
-	_map[19][16] = WALL;
-
-	_map[20][20] = WALL;
-	_map[21][20] = WALL;
-	_map[22][20] = WALL;
-	_map[23][20] = WALL;
-
-	_map[20][21] = WALL;
-	_map[21][21] = WALL;
-	_map[22][21] = WALL;
-	_map[23][21] = WALL;
-
-	_map[20][22] = WALL;
-	_map[21][22] = WALL;
-	_map[22][22] = WALL;
-	_map[23][22] = WALL;
-
-	_map[20][23] = WALL;
-	_map[21][23] = WALL;
-	_map[22][23] = WALL;
-	_map[23][23] = WALL;
-
-	_map[10][10] = WALL;
-	_map[11][10] = WALL;
-	_map[12][10] = WALL;
-	_map[13][10] = WALL;
-
-	_map[10][11] = WALL;
-	_map[11][11] = WALL;
-	_map[12][11] = WALL;
-	_map[13][11] = WALL;
-
-	_map[10][12] = WALL;
-	_map[11][12] = WALL;
-	_map[12][12] = WALL;
-	_map[13][12] = WALL;
-
-	_map[10][13] = WALL;
-	_map[11][13] = WALL;
-	_map[12][13] = WALL;
-	_map[13][13] = WALL;
-
-	_map[58][40] = WALL;
-	_map[58][41] = WALL;
-	_map[58][42] = WALL;
-	_map[58][43] = WALL;
 }
 //
 void Map::update()
@@ -122,41 +52,38 @@ void Map::draw( SDL_Surface* screen )
 				drect.y -= TILE_HEIGHT;
 				SDL_BlitSurface( stone_tile_high, &srect, screen, &drect );
 
-				try
+				if( col > 0 && row > 0 &&
+					_map[col-1][row] != WALL && 
+					_map[col][row-1] != WALL )
 				{
-					if( _map[col-1][row] != WALL && 
-						_map[col][row-1] != WALL )
-					{
-						drect.x = (col-1) * TILE_WIDTH - _cam_pos.x;
-						drect.y = (Sint16)((row-1) * TILE_HEIGHT * 0.75 - _cam_pos.y);
-						SDL_BlitSurface( shadow_south_east, &srect, screen, &drect );
-					}
-					if( _map[col-1][row] != WALL )
-					{
-						srect.h = TILE_HEIGHT*1.35;
-						drect.h = TILE_HEIGHT*1.35;
-						drect.x = (col-1) * TILE_WIDTH - _cam_pos.x;
-						drect.y = (Sint16)((row-1)*TILE_HEIGHT*0.75 - _cam_pos.y) - 2;
-						SDL_BlitSurface( shadow_east, &srect, screen, &drect );
-					}
-					if( _map[col][row-1] != WALL )
-					{
-						drect.x = (col) * TILE_WIDTH - _cam_pos.x;
-						drect.y = (Sint16)((row-2) * TILE_HEIGHT * 0.75 - _cam_pos.y) - TILE_HEIGHT*0.15;
-						SDL_BlitSurface( shadow_south, &srect, screen, &drect );
-					}
-					if( _map[col-1][row+1] != WALL && 
-						_map[col][row+1] != WALL &&
-						_map[col-1][row] != WALL)
-					{
-						drect.x = (col-1) * TILE_WIDTH - _cam_pos.x;
-						drect.y = (Sint16)(row * TILE_HEIGHT * 0.75 - _cam_pos.y) -2;
-						SDL_BlitSurface( shadow_north_east, &srect, screen, &drect );
-					}
+					drect.x = (col-1) * TILE_WIDTH - _cam_pos.x;
+					drect.y = (Sint16)((row-1) * TILE_HEIGHT * 0.75 - _cam_pos.y);
+					SDL_BlitSurface( shadow_south_east, &srect, screen, &drect );
 				}
-				catch( std::exception e )
+				if( col > 0 &&
+					_map[col-1][row] != WALL )
 				{
-					
+					srect.h = TILE_HEIGHT*1.35;
+					drect.h = TILE_HEIGHT*1.35;
+					drect.x = (col-1) * TILE_WIDTH - _cam_pos.x;
+					drect.y = (Sint16)((row-1)*TILE_HEIGHT*0.75 - _cam_pos.y) - 2;
+					SDL_BlitSurface( shadow_east, &srect, screen, &drect );
+				}
+				if( row > 0 &&
+					_map[col][row-1] != WALL )
+				{
+					drect.x = (col) * TILE_WIDTH - _cam_pos.x;
+					drect.y = (Sint16)((row-2) * TILE_HEIGHT * 0.75 - _cam_pos.y) - TILE_HEIGHT*0.15;
+					SDL_BlitSurface( shadow_south, &srect, screen, &drect );
+				}
+				if( col > 0 && row < MAP_ROWS-1 &&
+					_map[col-1][row+1] != WALL && 
+					_map[col][row+1] != WALL &&
+					_map[col-1][row] != WALL)
+				{
+					drect.x = (col-1) * TILE_WIDTH - _cam_pos.x;
+					drect.y = (Sint16)(row * TILE_HEIGHT * 0.75 - _cam_pos.y) -2;
+					SDL_BlitSurface( shadow_north_east, &srect, screen, &drect );
 				}
 				break;
 
@@ -198,14 +125,23 @@ void Map::draw( SDL_Surface* screen )
 				break;
 			}
 
-			if( _unit_pos.x == col && _unit_pos.y == row )
+			if( _player_01_pos.x == col && _player_01_pos.y == row )
 			{
 				srect.h = 64;
 				drect.h = TILE_HEIGHT;
 				drect.y = (Sint16)(
 					(row * TILE_HEIGHT * 0.75 - _cam_pos.y) - 
 					(TILE_HEIGHT * 0.5));
-				SDL_BlitSurface( character_basic, &srect, screen, &drect );
+				SDL_BlitSurface( character_player_01, &srect, screen, &drect );
+			}
+			else if( _player_02_pos.x == col && _player_02_pos.y == row )
+			{
+				srect.h = 64;
+				drect.h = TILE_HEIGHT;
+				drect.y = (Sint16)(
+					(row * TILE_HEIGHT * 0.75 - _cam_pos.y) - 
+					(TILE_HEIGHT * 0.5));
+				SDL_BlitSurface( character_player_02, &srect, screen, &drect );
 			}
 		}
 	}
@@ -228,6 +164,70 @@ SDL_Surface* Map::load_image( char *file )
 bool Map::is_pos_walkable( Position pos )
 {
 	return _map[pos.x][pos.y] == WALKABLE;
+}
+//
+void Map::load_map()
+{
+	std::ifstream infile;
+	infile.open( "../bin/saved_maps/map01" );
+	if( infile.good() )
+	{
+		_map.clear();
+		std::vector<int> tmp;
+		char c;
+		for( int col = 0; col < MAP_COLS; ++col )
+		{
+			tmp.clear();
+			for( int row = 0; row < MAP_ROWS; ++row )
+			{
+				infile >> c;
+				c -= 48;
+				if ( c == PLAYER01 )
+				{
+					_player_01_pos.x = col;
+					_player_01_pos.y = row;
+					tmp.push_back( 0 );
+				}
+				else if ( c == PLAYER02 )
+				{
+					_player_02_pos.x = col;
+					_player_02_pos.y = row;
+					tmp.push_back( 0 );
+				}
+				else
+					tmp.push_back( c );
+			}
+			_map.push_back( tmp );
+		}
+	}
+	else
+		reset_map();
+
+	infile.close();
+}
+//
+void Map::reset_map()
+{
+	_map.clear();
+	std::vector<int> tmp;
+	for( int col = 0; col < MAP_COLS; ++col )
+	{
+		tmp.clear();
+		for( int row = 0; row < MAP_ROWS; ++row ) 
+			tmp.push_back( 0 );
+		_map.push_back( tmp );
+	}
+}
+//
+std::vector<Position> Map::get_players_pos()
+{
+	//TODO: This will have to check what unit that wanna move and
+	//return the positions of all units but himself.
+
+	std::vector<Position> tmp_list;
+	//tmp_list.push_back( _player_01_pos );
+	tmp_list.push_back( _player_02_pos );
+	return tmp_list;
 }
 //
 //  TMP *****

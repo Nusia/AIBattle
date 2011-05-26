@@ -15,7 +15,6 @@ private:
 	const int SCREEN_BPP;
 	const int FRAMES_PER_SECOND;
 
-	Position _unit_pos;
 	std::vector< Position > _tmp_list;
 
 	void init_GL();

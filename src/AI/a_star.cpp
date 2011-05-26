@@ -1,6 +1,6 @@
 #include "a_star.h"
 
-AStar::AStar( std::vector< std::vector<int> > map )
+AStar::AStar( std::vector< std::vector<int> > map, std::vector<Position> units_list )
 {
 	std::vector<int> tmp;
 	for( unsigned int col = 0; col < map.size(); ++col )
@@ -8,9 +8,11 @@ AStar::AStar( std::vector< std::vector<int> > map )
 		{
 			path_map[col][row] = new AStarNode( 
 				Position(col, row), 
-				(map[col][row] == Map::WALKABLE) );
+				map[col][row] == Map::WALKABLE );
 		}
 
+		path_map[units_list[0].x][units_list[0].y]->set_walkable( false );
+		//path_map[units_list[1].x][units_list[1].y]->set_walkable( false );
 }
 
 std::vector<Position> AStar::get_best_path( Position start_pos, Position goal_pos )
