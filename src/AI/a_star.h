@@ -1,6 +1,8 @@
 #pragma once
 
+#include "SDL.h"
 #include "Math.h"
+
 #include "../helpers/position.h"
 #include "a_star_node.h"
 #include "../map/map.h"
@@ -21,6 +23,7 @@ private:
 	Position _start_pos;
 	Position _goal_pos;
 
+	Uint32 _start_time;
 
 	int heuristic_estimate_of_distance (Position start, Position goal);
 	double distance_between (Position coord_1, Position coord_2 );

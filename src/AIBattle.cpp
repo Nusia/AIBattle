@@ -95,10 +95,6 @@ void AIBattle::handle_event( SDL_Event *event )
 			_tmp_list = a_star.get_best_path( cell_pos, map.get_player_01_pos() );
 			_tmp_list.push_back( cell_pos );
 		}
-
-		std::cout << 
-			"Mouse button pressed: " << 
-			cell_pos << "\n";
 	}
 	map.handle_event( event );
 }

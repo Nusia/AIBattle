@@ -16,9 +16,10 @@ AStar::AStar( std::vector< std::vector<int> > map, std::vector<Position> units_l
 }
 
 std::vector<Position> AStar::get_best_path( Position start_pos, Position goal_pos )
-{
-	std::cout << "Calculating new path using A*\n";
+{	
+	std::cout << "Calculating new path to " << start_pos << " using A*\n";
 
+	_start_time = SDL_GetTicks();
 	_start_pos = start_pos;
 	_goal_pos = goal_pos;
 	open_list.push_back( start_pos );
@@ -98,7 +99,11 @@ std::vector<Position> AStar::get_best_path( Position start_pos, Position goal_po
 	}
 	reconstuct_path(current_node_coord);
 
+	Uint32 tmp_time;
+	tmp_time = SDL_GetTicks() - _start_time;
+
 	std::cout << "New path found.\n";
+	std::cout << "Time to calctulate the new path: " << tmp_time << " milliseconds\n\n";
 	return complete_path;
 }
 
