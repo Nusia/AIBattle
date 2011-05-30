@@ -17,15 +17,43 @@
 
 class Map
 {
+public:
+	static const enum tile_type{ WALKABLE, WALL, PLAYER01, PLAYER02 };
+
+	Map();
+	void init();
+	void update();
+	void draw( SDL_Surface* screen );
+
+	bool is_pos_walkable( Position pos );
+
+	//Set & Get
+	void 
+		setplayer_01_pos_( Position unit_pos ) { player_01_pos_ = unit_pos; }
+
+	Position Map::getplayer_01_pos_() { return player_01_pos_; }
+
+	std::vector<Position> Map::get_players_pos();
+
+	std::vector<std::vector<int>> 
+		get_map() const { return map_; }
+
+	Position 
+		getcam_pos_() { return cam_pos_; }
+
+	//TMP
+	void handle_event( SDL_Event *event );
+
+
 private:
 	//Variables
 	//---------
-	std::vector< std::vector<int> > _map;
+	std::vector< std::vector<int> > map_;
 
-	Position _player_01_pos;
-	Position _player_02_pos;
+	Position player_01_pos_;
+	Position player_02_pos_;
 
-	Position _cam_pos;
+	Position cam_pos_;
 
 	SDL_Surface* character_player_01;
 	SDL_Surface* character_player_02;
@@ -45,30 +73,4 @@ private:
 	SDL_Surface* load_image(char *file);
 	void load_map();
 	void reset_map();
-
-public:
-	static const enum tile_type{ WALKABLE, WALL, PLAYER01, PLAYER02 };
-
-	Map();
-	void update();
-	void draw( SDL_Surface* screen );
-
-	bool is_pos_walkable( Position pos );
-
-	//Set & Get
-	void 
-		set_player_01_pos( Position unit_pos ) { _player_01_pos = unit_pos; }
-
-	Position Map::get_player_01_pos() { return _player_01_pos; }
-
-	std::vector<Position> Map::get_players_pos();
-
-	std::vector<std::vector<int>> 
-		get_map() const { return _map; }
-
-	Position 
-		get_cam_pos() { return _cam_pos; }
-
-	//TMP
-	void handle_event( SDL_Event *event );
 };

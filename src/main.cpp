@@ -4,7 +4,8 @@
 
 int main( int argc, char* args[] )
 {
-	//Commit from laptop
+	std::cout << "AIBattle started.\n";
 	AIBattle AIBattle;
+	std::cout << "AIBattle shutting down.\n";
     return 0;
 }

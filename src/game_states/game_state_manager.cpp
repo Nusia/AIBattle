@@ -2,28 +2,28 @@
 
 GameStateManager::GameStateManager()
 {
-	_game_states.push_back( new PreGameState() );
-	_game_states.push_back( new InGameState() );
-	_active_state = _game_states[0];
-	_active_state->init();
+	game_states_.push_back( new PreGameState() );
+	game_states_.push_back( new InGameState() );
+	active_state_ = game_states_[0];
+	active_state_->init();
 }
 
 void GameStateManager::update()
 {
-	_active_state->update();
-	if( _active_state->isDone() )
+	active_state_->update();
+	if( active_state_->isDone() )
 	{
-		_active_state = _game_states[_active_state->get_next_state()];
-		_active_state->init();
+		active_state_ = game_states_[active_state_->get_next_state()];
+		active_state_->init();
 	}
 }
 
 void GameStateManager::draw( SDL_Surface* screen )
 {
-	_active_state->draw( screen );
+	active_state_->draw( screen );
 }
 
 void GameStateManager::handle_input( SDL_Event* event )
 {
-	_active_state->handle_input( event );
+	active_state_->handle_input( event );
 }

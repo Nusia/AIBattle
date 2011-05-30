@@ -8,14 +8,14 @@
 
 class GameStateManager
 {
-private:
-	IGameState* _active_state;
-	std::vector<IGameState*> _game_states;
-
 public:
 	GameStateManager();
 
 	void update();
 	void draw( SDL_Surface* screen );
 	void handle_input( SDL_Event* event );
+
+private:
+	IGameState* active_state_;
+	std::vector<IGameState*> game_states_;
 };

@@ -8,9 +8,14 @@
 
 class AIBattle
 {
-private:
+public:
+	AIBattle();
+	void handle_event( SDL_Event *event );
+	void update();
+	void draw();
 
-	GameStateManager _game_state_manager;
+private:
+	GameStateManager game_state_manager_;
 	int win_width;
 	int win_height;
 
@@ -20,10 +25,4 @@ private:
 
 	void init_GL();
 	void init();
-
-public:
-	AIBattle();
-	void handle_event( SDL_Event *event );
-	void update();
-	void draw();
 };

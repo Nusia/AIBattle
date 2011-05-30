@@ -133,7 +133,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib SDLmain.lib SDL_image.lib GlU32.Lib OpenGL32.Lib glut32.lib"
+				AdditionalDependencies="SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib GlU32.Lib OpenGL32.Lib glut32.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -211,6 +211,38 @@
 					RelativePath="..\src\helpers\position.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\src\helpers\text_handler.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="gui"
+				>
+				<File
+					RelativePath="..\src\gui\button.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\src\gui\button_handler.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="game_states"
+				>
+				<File
+					RelativePath="..\src\game_states\game_state_manager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\src\game_states\in_game_state.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\src\game_states\pre_game_state.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -246,7 +278,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\src\helpers\TESTIMG.cpp"
+					RelativePath="..\src\helpers\text_handler.h"
 					>
 				</File>
 			</Filter>
@@ -259,6 +291,54 @@
 				</File>
 				<File
 					RelativePath="..\src\AI\a_star_node.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="gui"
+				>
+				<File
+					RelativePath="..\src\gui\button.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\gui\button_handler.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="game_states"
+				>
+				<File
+					RelativePath="..\src\game_states\game_state_manager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\game_states\i_game_state.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\game_states\in_game_state.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\game_states\pre_game_state.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="event_handler"
+				>
+				<File
+					RelativePath="..\src\event_handler\event.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\event_handler\event_handler.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\event_handler\event_handler_base.h"
 					>
 				</File>
 			</Filter>

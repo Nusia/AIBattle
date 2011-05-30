@@ -3,10 +3,6 @@
 
 class InGameState : public IGameState
 {
-private:
-	Map map;
-	std::vector< Position > _tmp_list;
-
 public:
 	InGameState();
 	void init();
@@ -15,4 +11,8 @@ public:
 	void draw( SDL_Surface* screen );
 	bool isDone();
 	int get_next_state();
+
+private:
+	Map map;
+	std::vector< Position > tmp_list_;
 };

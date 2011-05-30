@@ -12,7 +12,7 @@ SCREEN_BPP(32), FRAMES_PER_SECOND(60)
 	bool quit = false;
 	while( !quit )
 	{
-		_game_state_manager.update();
+		game_state_manager_.update();
 		while( SDL_PollEvent( &event ) )
 		{
 			if( event.type == SDL_QUIT || 
@@ -21,7 +21,7 @@ SCREEN_BPP(32), FRAMES_PER_SECOND(60)
 				)
 				quit = true;
 			else
-				_game_state_manager.handle_input( &event );
+				game_state_manager_.handle_input( &event );
 		}
 		draw();
 	}
@@ -69,7 +69,7 @@ void AIBattle::draw()
 {
 	glClear( GL_COLOR_BUFFER_BIT );
 
-	_game_state_manager.draw( screen );
+	game_state_manager_.draw( screen );
 
 	SDL_Flip( screen );
 	//SDL_GL_SwapBuffers();

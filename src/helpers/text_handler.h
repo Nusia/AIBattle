@@ -16,7 +16,7 @@ public:
 	static void render_text(
 		int x, int y, 
 		TTF_Font *font, 
-		const std::string& Text, 
+		const char* text, 
 		const int R, const int G, const int B, 
 		SDL_Surface* screen );
 };
