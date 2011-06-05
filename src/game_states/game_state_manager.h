@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "i_game_state.h"
-#include "pre_game_state.h"
+#include "pre_game/pre_game_state.h"
 #include "in_game_state.h"
 
 class GameStateManager

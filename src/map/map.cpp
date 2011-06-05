@@ -13,19 +13,19 @@ void Map::init()
 
 	load_map();
 
-	character_player_01 = load_image("../resources/character_basic_green.png");
-	character_player_02 = load_image("../resources/character_basic_red.png");
-	stone_tile_low = load_image("../resources/stone_tile_low_64.png");
-	stone_tile_high = load_image("../resources/stone_tile_high_64.png");
+	character_player_01 = ImageHelper::load_image("../resources/character_basic_green.png");
+	character_player_02 = ImageHelper::load_image("../resources/character_basic_red.png");
+	stone_tile_low = ImageHelper::load_image("../resources/stone_tile_low_64.png");
+	stone_tile_high = ImageHelper::load_image("../resources/stone_tile_high_64.png");
 
-	shadow_north_east = load_image("../resources/shadow_north_east.png");
-	shadow_east = load_image("../resources/shadow_east.png");
-	shadow_south_east = load_image("../resources/shadow_south_east.png");	
-	shadow_south = load_image("../resources/shadow_south.png");
-	shadow_south_west = load_image("../resources/shadow_south_west.png");
-	shadow_west = load_image("../resources/shadow_west.png");
-	shadow_north_west = load_image("../resources/shadow_north_west.png");
-	shadow_north = load_image("../resources/shadow_north.png");
+	shadow_north_east = ImageHelper::load_image("../resources/shadow_north_east.png");
+	shadow_east = ImageHelper::load_image("../resources/shadow_east.png");
+	shadow_south_east = ImageHelper::load_image("../resources/shadow_south_east.png");	
+	shadow_south = ImageHelper::load_image("../resources/shadow_south.png");
+	shadow_south_west = ImageHelper::load_image("../resources/shadow_south_west.png");
+	shadow_west = ImageHelper::load_image("../resources/shadow_west.png");
+	shadow_north_west = ImageHelper::load_image("../resources/shadow_north_west.png");
+	shadow_north = ImageHelper::load_image("../resources/shadow_north.png");
 	std::cout << "Map ready.\n";
 }
 //
@@ -151,20 +151,6 @@ void Map::draw( SDL_Surface* screen )
 			}
 		}
 	}
-}
-//
-SDL_Surface* Map::load_image( char *file ) 
-{
-	SDL_Surface *tmp;
-	tmp = IMG_Load(file);
-
-	if (tmp == NULL) {
-		std::cout << "Error: Could not open " << file << ". " << IMG_GetError() << "\n";
-	} else {
-		if(SDL_SetColorKey(tmp, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(tmp->format, COLORKEY)) == -1)
-			std::cout << "Warning: colorkey will not be used, reason: " << SDL_GetError() << "\n";
-	}
-	return tmp;
 }
 //
 bool Map::is_pos_walkable( Position pos )

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="AIBattle"
 	ProjectGUID="{0C8B688A-AEE8-4A83-B3ED-6B2FA7F93DB8}"
 	RootNamespace="AIBattle"
@@ -208,6 +208,10 @@
 				Name="helpers"
 				>
 				<File
+					RelativePath="..\src\helpers\image_helper.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\src\helpers\position.cpp"
 					>
 				</File>
@@ -239,10 +243,14 @@
 					RelativePath="..\src\game_states\in_game_state.cpp"
 					>
 				</File>
-				<File
-					RelativePath="..\src\game_states\pre_game_state.cpp"
+				<Filter
+					Name="pre_game"
 					>
-				</File>
+					<File
+						RelativePath="..\src\game_states\pre_game\pre_game_state.cpp"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
@@ -273,6 +281,10 @@
 			<Filter
 				Name="helpers"
 				>
+				<File
+					RelativePath="..\src\helpers\image_helper.h"
+					>
+				</File>
 				<File
 					RelativePath="..\src\helpers\position.h"
 					>
@@ -321,10 +333,14 @@
 					RelativePath="..\src\game_states\in_game_state.h"
 					>
 				</File>
-				<File
-					RelativePath="..\src\game_states\pre_game_state.h"
+				<Filter
+					Name="pre_game"
 					>
-				</File>
+					<File
+						RelativePath="..\src\game_states\pre_game\pre_game_state.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="event_handler"

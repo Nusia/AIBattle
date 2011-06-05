@@ -4,7 +4,6 @@
 #define MAP_ROWS 40
 #define TILE_WIDTH 64
 #define TILE_HEIGHT 64
-#define COLORKEY 255, 0, 255 //Your Transparent colour
 
 #include <iostream>
 #include <fstream>
@@ -14,6 +13,7 @@
 #include "SDL_image.h"
 
 #include "../helpers/position.h"
+#include "../helpers/image_helper.h"
 
 class Map
 {
@@ -70,7 +70,6 @@ private:
 
 	//Functions
 	//---------
-	SDL_Surface* load_image(char *file);
 	void load_map();
 	void reset_map();
 };

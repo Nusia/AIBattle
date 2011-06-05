@@ -6,7 +6,7 @@ void PreGameState::init()
 	is_done_ = false;
 	font = TextHandler::get_font( "../resources/fonts/larabiefont_rg.ttf", 16 );
 
-	SDL_Surface* button_img = load_image("../resources/start_menu_button.png");
+	SDL_Surface* button_img = ImageHelper::load_image("../resources/start_menu_button.png");
 	SDL_Rect button_rect;
 	button_rect.x = 250;
 	button_rect.y = 300;
