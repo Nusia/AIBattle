@@ -67,10 +67,9 @@ void AIBattle::init()
 
 void AIBattle::draw()
 {
-	glClear( GL_COLOR_BUFFER_BIT );
+	SDL_FillRect( screen,NULL, 0x000000 ); //Clear screen
 
 	game_state_manager_.draw( screen );
 
 	SDL_Flip( screen );
-	//SDL_GL_SwapBuffers();
 }

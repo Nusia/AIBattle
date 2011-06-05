@@ -247,6 +247,14 @@
 					Name="pre_game"
 					>
 					<File
+						RelativePath="..\src\game_states\pre_game\ai_settings.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\src\game_states\pre_game\map_settings.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\src\game_states\pre_game\pre_game_state.cpp"
 						>
 					</File>
@@ -337,6 +345,18 @@
 					Name="pre_game"
 					>
 					<File
+						RelativePath="..\src\game_states\pre_game\ai_settings.h"
+						>
+					</File>
+					<File
+						RelativePath="..\src\game_states\pre_game\i_pre_game.h"
+						>
+					</File>
+					<File
+						RelativePath="..\src\game_states\pre_game\map_settings.h"
+						>
+					</File>
+					<File
 						RelativePath="..\src\game_states\pre_game\pre_game_state.h"
 						>
 					</File>
@@ -365,6 +385,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
+		<File
+			RelativePath=".\ClassDiagram1.cd"
+			>
+		</File>
 		<File
 			RelativePath="..\resources\saved_map_01.xml"
 			>
