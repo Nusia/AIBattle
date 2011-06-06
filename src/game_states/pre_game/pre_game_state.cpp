@@ -28,7 +28,7 @@ void PreGameState::init()
 		this, &PreGameState::change_to_map_settings);
 	button_handler_.add_button( map_settings_button );
 
-	SDL_Surface* ai_settings_button_img = ImageHelper::load_image("../resources/pre_game/map_settings_button.png");
+	SDL_Surface* ai_settings_button_img = ImageHelper::load_image("../resources/pre_game/ai_settings_button.png");
 	SDL_Rect ai_settings_button_rect;
 	ai_settings_button_rect.x = 148;
 	ai_settings_button_rect.y = 32;

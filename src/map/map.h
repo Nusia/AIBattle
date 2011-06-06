@@ -38,9 +38,6 @@ public:
 	std::vector<std::vector<int>> 
 		get_map() const { return map_; }
 
-	Position 
-		getcam_pos_() { return cam_pos_; }
-
 	//TMP
 	void handle_event( SDL_Event *event );
 
@@ -52,21 +49,6 @@ private:
 
 	Position player_01_pos_;
 	Position player_02_pos_;
-
-	Position cam_pos_;
-
-	SDL_Surface* character_player_01;
-	SDL_Surface* character_player_02;
-	SDL_Surface* stone_tile_low;
-	SDL_Surface* stone_tile_high;
-	SDL_Surface* shadow_north_east;
-	SDL_Surface* shadow_east;
-	SDL_Surface* shadow_south_east;
-	SDL_Surface* shadow_south;
-	SDL_Surface* shadow_south_west;
-	SDL_Surface* shadow_west;
-	SDL_Surface* shadow_north_west;
-	SDL_Surface* shadow_north;
 
 	//Functions
 	//---------
