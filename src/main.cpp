@@ -2,7 +2,7 @@
 
 #include "AIBattle.h"
 
-//gitTest
+//gitTest02
 
 int main( int argc, char* args[] )
 {
