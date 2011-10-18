@@ -2,6 +2,8 @@
 
 #include "AIBattle.h"
 
+//gitTest
+
 int main( int argc, char* args[] )
 {
 	std::cout << "AIBattle started.\n";
