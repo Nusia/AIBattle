@@ -1,6 +1,6 @@
-#include "image_helper.h"
+#include "cImageHelper.h"
 
-SDL_Surface* ImageHelper::load_image( char *file ) 
+SDL_Surface* cImageHelper::LoadImage( char *file ) 
 {
 	SDL_Surface *tmp;
 	tmp = IMG_Load(file);

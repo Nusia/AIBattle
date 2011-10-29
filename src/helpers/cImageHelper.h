@@ -8,8 +8,8 @@
 #include "SDL_ttf.h"
 #include "SDL_opengl.h"
 
-class ImageHelper
+class cImageHelper
 {
 public:
-	static SDL_Surface* load_image(char *file);
+	static SDL_Surface* LoadImage(char *file);
 };

@@ -1,41 +1,41 @@
-#include "map.h"
+#include "cMap.h"
 
-Map::Map()
+cMap::cMap()
 {
 }
 //
-void Map::init()
+void cMap::Init()
 {
 	std::cout << "Initiating map.\n";
-	player_01_pos_ = Position( 0, 0 );
-	player_02_pos_ = Position( 0, 1 );
+	_player01Pos = cPosition( 0, 0 );
+	_player02Pos = cPosition( 0, 1 );
 
-	load_map();
+	_loadMap();
 
 	std::cout << "Map ready.\n";
 }
 //
-void Map::update()
+void cMap::Update()
 {
 }
 //
-void Map::draw( SDL_Surface* screen )
+void cMap::Draw( SDL_Surface* screen )
 {
 }
 //
-bool Map::is_pos_walkable( Position pos )
+bool cMap::IsPosWalkable( cPosition pos )
 {
-	return map_[pos.x][pos.y] == WALKABLE;
+	return _vMap[pos.x][pos.y] == WALKABLE;
 }
 //
-void Map::load_map()
+void cMap::_loadMap()
 {
 	std::cout << "Loading saved map.\n";
 	std::ifstream infile;
 	infile.open( "../bin/saved_maps/map01" );
 	if( infile.good() )
 	{
-		map_.clear();
+		_vMap.clear();
 		std::vector<int> tmp;
 		char c;
 		for( int col = 0; col < MAP_COLS; ++col )
@@ -47,57 +47,57 @@ void Map::load_map()
 				c -= 48;
 				if ( c == PLAYER01 )
 				{
-					player_01_pos_.x = col;
-					player_01_pos_.y = row;
+					_player01Pos.x = col;
+					_player01Pos.y = row;
 					tmp.push_back( 0 );
 				}
 				else if ( c == PLAYER02 )
 				{
-					player_02_pos_.x = col;
-					player_02_pos_.y = row;
+					_player02Pos.x = col;
+					_player02Pos.y = row;
 					tmp.push_back( 0 );
 				}
 				else
 					tmp.push_back( c );
 			}
-			map_.push_back( tmp );
+			_vMap.push_back( tmp );
 		}
 	}
 	else
 	{
 		std::cout << "Map not found. Generating new map.\n";
-		reset_map();
+		_resetMap();
 	}
 
 	infile.close();
 }
 //
-void Map::reset_map()
+void cMap::_resetMap()
 {
-	map_.clear();
+	_vMap.clear();
 	std::vector<int> tmp;
 	for( int col = 0; col < MAP_COLS; ++col )
 	{
 		tmp.clear();
 		for( int row = 0; row < MAP_ROWS; ++row ) 
 			tmp.push_back( 0 );
-		map_.push_back( tmp );
+		_vMap.push_back( tmp );
 	}
 }
 //
-std::vector<Position> Map::get_players_pos()
+std::vector<cPosition> cMap::GetPlayersPos()
 {
 	//TODO: This will have to check what unit that wanna move and
-	//return the positions of all units but himself.
+	//return the cPositions of all units but himself.
 
-	std::vector<Position> tmp_list;
-	//tmp_list.push_back( player_01_pos_ );
-	tmp_list.push_back( player_02_pos_ );
+	std::vector<cPosition> tmp_list;
+	//tmp_list.push_back( _player01Pos );
+	tmp_list.push_back( _player02Pos );
 	return tmp_list;
 }
 //
 //  TMP *****
 //
-void Map::handle_event( SDL_Event *event )
+void cMap::HandleEvent( SDL_Event *event )
 {
 }

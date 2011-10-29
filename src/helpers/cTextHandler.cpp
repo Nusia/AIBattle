@@ -1,6 +1,6 @@
-#include "text_handler.h"
+#include "cTextHandler.h"
 
-TTF_Font* TextHandler::get_font( char* name, int size )
+TTF_Font* cTextHandler::GetFont( char* name, int size )
 {
 	if( TTF_Init() == -1 )
 		std::cout << "Could not init SDL_TTF.\n";
@@ -14,7 +14,7 @@ TTF_Font* TextHandler::get_font( char* name, int size )
 	return tmp_font;
 }
 
-void TextHandler::render_text(
+void cTextHandler::RenderText(
 		int x, int y, 
 		TTF_Font *font, 
 		const char* text, 

@@ -1,24 +1,24 @@
-#include "i_game_state.h"
-#include "../AI/a_star.h"
+#include "iGameState.h"
+#include "../AI/cAStar.h"
 
-class InGameState : public IGameState
+class cInGameState : public iGameState
 {
 public:
-	InGameState();
-	void init();
-	void handle_input( SDL_Event* event );
-	void update();
-	void draw( SDL_Surface* screen );
-	bool isDone();
-	int get_next_state();
+	cInGameState();
+	void Init();
+	void HandleInput( SDL_Event* event );
+	void Update();
+	void Draw( SDL_Surface* screen );
+	bool IsDone();
+	int GetNextState();
 
 private:
 	//Variables
 	//---------
-	Map map;
-	std::vector< Position > tmp_list_;
+	cMap map;
+	std::vector< cPosition > tmp_list_;
 
-	Position cam_pos_;
+	cPosition cam_pos_;
 	
 	SDL_Surface* character_player_01;
 	SDL_Surface* character_player_02;

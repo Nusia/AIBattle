@@ -2,10 +2,10 @@
 
 Soldier::Soldier()
 {
-	pos_ = Position( 3, 3 );
+	_pos = cPosition( 3, 3 );
 }
 
-void Soldier::set_new_destination(int x_cell, int y_cell)
+void Soldier::SetNewDestination(int x_cell, int y_cell)
 {
-	dest_pos_ = Position( x_cell, y_cell );
+	_destPos = cPosition( x_cell, y_cell );
 }

@@ -1,17 +1,17 @@
 #pragma once
 
-#include "../helpers/position.h"
+#include "../helpers/cPosition.h"
 
 class Soldier
 {
 public:
 	Soldier();
-	void update();
-	void draw();
+	void Update();
+	void Draw();
 
-	void set_new_destination( int x_cell, int y_cell );
+	void SetNewDestination( int x_cell, int y_cell );
 
 private:
-	Position pos_;
-	Position dest_pos_;
+	cPosition _pos;
+	cPosition _destPos;
 };

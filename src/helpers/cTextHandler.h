@@ -6,14 +6,14 @@
 #include "SDL_ttf.h"
 #include "SDL_opengl.h"
 
-class TextHandler
+class cTextHandler
 {
 public:
-	static TTF_Font* get_font( 
+	static TTF_Font* GetFont( 
 		char* name, 
 		int size );
 
-	static void render_text(
+	static void RenderText(
 		int x, int y, 
 		TTF_Font *font, 
 		const char* text, 
