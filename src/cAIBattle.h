@@ -2,9 +2,9 @@
 
 #include "Math.h"
 
-#include "game_states/cGameStateManager.h"
-#include "map/cMap.h"
-#include "AI/cAStar.h"
+#include "cGameStateManager.h"
+#include "cMap.h"
+#include "cAStar.h"
 
 class cAIBattle
 {
