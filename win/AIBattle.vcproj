@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="AIBattle"
 	ProjectGUID="{0C8B688A-AEE8-4A83-B3ED-6B2FA7F93DB8}"
 	RootNamespace="AIBattle"
@@ -44,7 +44,8 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="2"
+				RuntimeLibrary="3"
+				EnableFunctionLevelLinking="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="4"
@@ -60,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib SDLmain.lib SDL_image.lib"
+				AdditionalDependencies="SDL.lib SDLmain.lib SDL_image.lib SDL_ttf.lib GlU32.Lib OpenGL32.Lib glut32.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -173,93 +174,69 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\src\AIBattle.cpp"
+				RelativePath="..\src\cAIBattle.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cAiSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cAStar.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cButton.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cButtonHandler.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cGameStateManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cImageHelper.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cInGameState.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cMap.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cMapSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cMouse.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cPosition.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cPreGameState.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cSoldier.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cTextHandler.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\src\main.cpp"
 				>
 			</File>
-			<Filter
-				Name="map"
-				>
-				<File
-					RelativePath="..\src\map\map.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="units"
-				>
-				<File
-					RelativePath="..\src\units\soldier.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="AI"
-				>
-				<File
-					RelativePath="..\src\AI\a_star.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="helpers"
-				>
-				<File
-					RelativePath="..\src\helpers\image_helper.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\src\helpers\position.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\src\helpers\text_handler.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="gui"
-				>
-				<File
-					RelativePath="..\src\gui\button.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\src\gui\button_handler.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="game_states"
-				>
-				<File
-					RelativePath="..\src\game_states\game_state_manager.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\src\game_states\in_game_state.cpp"
-					>
-				</File>
-				<Filter
-					Name="pre_game"
-					>
-					<File
-						RelativePath="..\src\game_states\pre_game\ai_settings.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\src\game_states\pre_game\map_settings.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\src\game_states\pre_game\pre_game_state.cpp"
-						>
-					</File>
-				</Filter>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -267,117 +244,89 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\src\AIBattle.h"
+				RelativePath="..\src\cAIBattle.h"
 				>
 			</File>
-			<Filter
-				Name="map"
+			<File
+				RelativePath="..\src\cAiSettings.h"
 				>
-				<File
-					RelativePath="..\src\map\map.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="units"
+			</File>
+			<File
+				RelativePath="..\src\cAStar.h"
 				>
-				<File
-					RelativePath="..\src\units\soldier.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="helpers"
+			</File>
+			<File
+				RelativePath="..\src\cAStarNode.h"
 				>
-				<File
-					RelativePath="..\src\helpers\image_helper.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\helpers\position.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\helpers\text_handler.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="AI"
+			</File>
+			<File
+				RelativePath="..\src\cButton.h"
 				>
-				<File
-					RelativePath="..\src\AI\a_star.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\AI\a_star_node.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="gui"
+			</File>
+			<File
+				RelativePath="..\src\cButtonHandler.h"
 				>
-				<File
-					RelativePath="..\src\gui\button.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\gui\button_handler.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="game_states"
+			</File>
+			<File
+				RelativePath="..\src\cGameStateManager.h"
 				>
-				<File
-					RelativePath="..\src\game_states\game_state_manager.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\game_states\i_game_state.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\game_states\in_game_state.h"
-					>
-				</File>
-				<Filter
-					Name="pre_game"
-					>
-					<File
-						RelativePath="..\src\game_states\pre_game\ai_settings.h"
-						>
-					</File>
-					<File
-						RelativePath="..\src\game_states\pre_game\i_pre_game.h"
-						>
-					</File>
-					<File
-						RelativePath="..\src\game_states\pre_game\map_settings.h"
-						>
-					</File>
-					<File
-						RelativePath="..\src\game_states\pre_game\pre_game_state.h"
-						>
-					</File>
-				</Filter>
-			</Filter>
-			<Filter
-				Name="event_handler"
+			</File>
+			<File
+				RelativePath="..\src\cImageHelper.h"
 				>
-				<File
-					RelativePath="..\src\event_handler\event.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\event_handler\event_handler.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\event_handler\event_handler_base.h"
-					>
-				</File>
-			</Filter>
+			</File>
+			<File
+				RelativePath="..\src\cInGameState.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cMap.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cMapSettings.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cMouse.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cPosition.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cPreGameState.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cSoldier.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\cTextHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\event.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\event_handler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\event_handler_base.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\iGameState.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\iPreGame.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

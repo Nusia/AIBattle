@@ -178,7 +178,11 @@ void cAStar::_reconstuctPath(cPosition goalNode)
 		}
 
 		_vCompletePath.push_back(tmp_coord);
-		tmp_coord = _prgPathMap[tmp_coord.x][tmp_coord.y]->get_parent()->get_coordinate();
+		cAStarNode *tmpNode = _prgPathMap[tmp_coord.x][tmp_coord.y]->get_parent();
+		if( tmpNode == NULL )
+			std::cout << "ERROR: Cannot go there./n" ;
+		else
+			tmp_coord = tmpNode->get_coordinate();
 	}
 }
 

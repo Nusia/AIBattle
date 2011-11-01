@@ -2,14 +2,16 @@
 
 cGameStateManager::cGameStateManager()
 {
-	_vGameStates.push_back( new cPreGameState() );
-	_vGameStates.push_back( new cInGameState() );
+	_pMouse = new cMouse();
+	_vGameStates.push_back( new cPreGameState(_pMouse) );
+	_vGameStates.push_back( new cInGameState(_pMouse) );
 	_pActiveState = _vGameStates[0];
 	_pActiveState->Init();
 }
 
 void cGameStateManager::Update()
 {
+	_pMouse->Update();
 	_pActiveState->Update();
 	if( _pActiveState->IsDone() )
 	{

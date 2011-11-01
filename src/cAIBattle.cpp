@@ -12,9 +12,11 @@ SCREEN_BPP(32), FRAMES_PER_SECOND(60)
 	bool quit = false;
 	while( !quit )
 	{
+		//TODO: Check if there are any SDL_Events to pull, othervice, update and draw outside the loop.
 		_GameStateManager.Update();
 		while( SDL_PollEvent( &event ) )
 		{
+			_GameStateManager.Update();
 			if( event.type == SDL_QUIT || 
 				( event.type == SDL_KEYDOWN && 
 				  event.key.keysym.sym == SDLK_ESCAPE )
@@ -22,6 +24,7 @@ SCREEN_BPP(32), FRAMES_PER_SECOND(60)
 				quit = true;
 			else
 				_GameStateManager.HandleInput( &event );
+			Draw();
 		}
 		Draw();
 	}

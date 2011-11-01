@@ -4,9 +4,9 @@ void cPreGameState::Init()
 {
 	std::cout << "Initiating pregame state.\n";
 	_bIsDone = false;
-	_pFont = cTextHandler::GetFont( "resources/fonts/larabiefont_rg.ttf", 16 );
+	_pFont = cTextHandler::GetFont( "../resources/fonts/larabiefont_rg.ttf", 16 );
 
-	SDL_Surface* button_img = cImageHelper::LoadImage("resources/pre_game/start_button.png");
+	SDL_Surface* button_img = cImageHelper::LoadImage("../resources/pre_game/start_button.png");
 	SDL_Rect button_rect;
 	button_rect.x = 896;
 	button_rect.y = 0;
@@ -17,7 +17,7 @@ void cPreGameState::Init()
 		this, &cPreGameState::ChangeState);
 	_buttonHandler.AddButton( tmp_button );
 
-	SDL_Surface* map_settings_button_img = cImageHelper::LoadImage("resources/pre_game/map_settings_button.png");
+	SDL_Surface* map_settings_button_img = cImageHelper::LoadImage("../resources/pre_game/map_settings_button.png");
 	SDL_Rect map_settings_button_rect;
 	map_settings_button_rect.x = 10;
 	map_settings_button_rect.y = 32;
@@ -28,7 +28,7 @@ void cPreGameState::Init()
 		this, &cPreGameState::_changeToMapSettings);
 	_buttonHandler.AddButton( map_settings_button );
 
-	SDL_Surface* ai_settings_button_img = cImageHelper::LoadImage("resources/pre_game/ai_settings_button.png");
+	SDL_Surface* ai_settings_button_img = cImageHelper::LoadImage("../resources/pre_game/ai_settings_button.png");
 	SDL_Rect ai_settings_button_rect;
 	ai_settings_button_rect.x = 148;
 	ai_settings_button_rect.y = 32;

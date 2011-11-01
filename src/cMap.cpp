@@ -32,7 +32,7 @@ void cMap::_loadMap()
 {
 	std::cout << "Loading saved map.\n";
 	std::ifstream infile;
-	infile.open( "bin/saved_maps/map01" );
+	infile.open( "../bin/saved_maps/map01" );
 	if( infile.good() )
 	{
 		_vMap.clear();

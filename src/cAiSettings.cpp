@@ -2,7 +2,7 @@
 
 cAISettings::cAISettings()
 {
-	_pFont = cTextHandler::GetFont( "resources/fonts/larabiefont_rg.ttf", 16 );
+	_pFont = cTextHandler::GetFont( "../resources/fonts/larabiefont_rg.ttf", 16 );
 }
 
 void cAISettings::HandleInput( SDL_Event* event )

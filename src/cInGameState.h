@@ -1,10 +1,12 @@
 #include "iGameState.h"
 #include "cAStar.h"
+#include "cMouse.h"
+#include "Math.h"
 
 class cInGameState : public iGameState
 {
 public:
-	cInGameState();
+	cInGameState( cMouse* pMouse);
 	void Init();
 	void HandleInput( SDL_Event* event );
 	void Update();
@@ -20,16 +22,13 @@ private:
 
 	cPosition cam_pos_;
 	
-	SDL_Surface* character_player_01;
-	SDL_Surface* character_player_02;
-	SDL_Surface* stone_tile_low;
-	SDL_Surface* stone_tile_high;
-	SDL_Surface* shadow_north_east;
-	SDL_Surface* shadow_east;
-	SDL_Surface* shadow_south_east;
-	SDL_Surface* shadow_south;
-	SDL_Surface* shadow_south_west;
-	SDL_Surface* shadow_west;
-	SDL_Surface* shadow_north_west;
-	SDL_Surface* shadow_north;
+	SDL_Surface* _pCharacterPlayer01Sprite;
+	SDL_Surface* _pCharacterPlayer02Sprite;
+	SDL_Surface* _pGround;
+	SDL_Surface* _pWall;
+
+	bool _isMouseScrollCamera;
+	cPosition _posMouseScrollOrigo;
+
+	cMouse* _pMouse;
 };

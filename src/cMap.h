@@ -3,7 +3,7 @@
 #define MAP_COLS 60
 #define MAP_ROWS 40
 #define TILE_WIDTH 64
-#define TILE_HEIGHT 64
+#define TILE_HEIGHT 64 
 
 #include <iostream>
 #include <fstream>

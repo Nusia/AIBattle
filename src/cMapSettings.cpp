@@ -7,12 +7,12 @@ cMapSettings::cMapSettings()
 	_fMapOffsetX = 1024.f/2.f - (MAP_COLS*TILE_SIZE)/2.f;
 	_fMapOffsetY = 68;
 
-	_pFont = cTextHandler::GetFont( "resources/fonts/larabiefont_rg.ttf", 16 );
-	_pWhiteTex = cImageHelper::LoadImage( "resources/pre_game/white.bmp" );
-	_pBlackTex = cImageHelper::LoadImage( "resources/pre_game/black.bmp" );
-	_pRedTex = cImageHelper::LoadImage( "resources/pre_game/red.bmp" );
-	_pGreenTex = cImageHelper::LoadImage( "resources/pre_game/green.bmp" );
-	_pBlueTex = cImageHelper::LoadImage( "resources/pre_game/blue.bmp" );	
+	_pFont = cTextHandler::GetFont( "../resources/fonts/larabiefont_rg.ttf", 16 );
+	_pWhiteTex = cImageHelper::LoadImage( "../resources/pre_game/white.bmp" );
+	_pBlackTex = cImageHelper::LoadImage( "../resources/pre_game/black.bmp" );
+	_pRedTex = cImageHelper::LoadImage( "../resources/pre_game/red.bmp" );
+	_pGreenTex = cImageHelper::LoadImage( "../resources/pre_game/green.bmp" );
+	_pBlueTex = cImageHelper::LoadImage( "../resources/pre_game/blue.bmp" );	
 }
 
 void cMapSettings::HandleInput( SDL_Event* event )
@@ -20,22 +20,25 @@ void cMapSettings::HandleInput( SDL_Event* event )
 	cAStar a_star( map_.GetMap(), map_.GetPlayersPos() );
 	if( event->type == SDL_MOUSEBUTTONDOWN )
 	{
-		cPosition cell_pos;
-		cell_pos.x = (int)floorf(
-			( (event->motion.x - _fMapOffsetX) / 
-			( (float)(MAP_COLS*TILE_SIZE) / MAP_COLS) ) );
-
-		cell_pos.y = (int)floorf( 
-			((event->motion.y - _fMapOffsetY) / 
-			((float)(MAP_ROWS*TILE_SIZE) / MAP_ROWS) ) );
-
-		if( cell_pos.x >= 0 && cell_pos.x <= MAP_COLS-1 && 
-			cell_pos.y >= 0 && cell_pos.y <= MAP_ROWS-1 && 
-			map_.IsPosWalkable( cell_pos ) )
+		if( SDL_BUTTON( SDL_BUTTON_LEFT ) )
 		{
-			_vPathList.clear();
-			_vPathList = a_star.GetBestPath( cell_pos, map_.GetPlayer01Pos() );
-			_vPathList.push_back( cell_pos );
+			cPosition cell_pos;
+			cell_pos.x = (int)floorf(
+				( (event->motion.x - _fMapOffsetX) / 
+				( (float)(MAP_COLS*TILE_SIZE) / MAP_COLS) ) );
+
+			cell_pos.y = (int)floorf( 
+				((event->motion.y - _fMapOffsetY) / 
+				((float)(MAP_ROWS*TILE_SIZE) / MAP_ROWS) ) );
+
+			if( cell_pos.x >= 0 && cell_pos.x <= MAP_COLS-1 && 
+				cell_pos.y >= 0 && cell_pos.y <= MAP_ROWS-1 && 
+				map_.IsPosWalkable( cell_pos ) )
+			{
+				_vPathList.clear();
+				_vPathList = a_star.GetBestPath( cell_pos, map_.GetPlayer01Pos() );
+				_vPathList.push_back( cell_pos );
+			}
 		}
 	}
 }

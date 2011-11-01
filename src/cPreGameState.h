@@ -17,7 +17,7 @@
 class cPreGameState : public iGameState
 {
 public:
-	cPreGameState(){};
+	cPreGameState( cMouse* pMouse ) : _pMouse(pMouse) {};
 	void ChangeState();
 	void Init();
 	void HandleInput( SDL_Event* event );
@@ -37,4 +37,6 @@ private:
 	bool _bIsDone;
 	TTF_Font* _pFont;
 	cButtonHandler _buttonHandler;	
+
+	cMouse* _pMouse;
 };

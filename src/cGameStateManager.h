@@ -18,4 +18,5 @@ public:
 private:
 	iGameState* _pActiveState;
 	std::vector<iGameState*> _vGameStates;
+	cMouse* _pMouse;
 };

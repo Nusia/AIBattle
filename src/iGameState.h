@@ -1,6 +1,9 @@
 #pragma once
 
+#include "cMouse.h"
 #include "SDL.h"
+
+class cMouse;
 
 class iGameState
 {
