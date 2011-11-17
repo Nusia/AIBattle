@@ -1,28 +1,29 @@
 #pragma once
 
-#include "Math.h"
+#include <irrlicht.h>
+#include "driverChoice.h"
 
-#include "cGameStateManager.h"
+#include "Math.h"
+#include "cGameManager.h"
+#include "cStateManager.h"
 #include "cMap.h"
 #include "cAStar.h"
 
 class cAIBattle
 {
 public:
-	cAIBattle();
-	void HandleEvent( SDL_Event *event );
+	cAIBattle( video::E_DRIVER_TYPE driverType );
 	void Update();
-	void Draw();
+	void Draw( IrrlichtDevice* device );
 
 private:
-	cGameStateManager _GameStateManager;
+	cGameManager* _pGameManager;
+	irr::IrrlichtDevice* _pIrrDevice;
+	irr::video::IVideoDriver* _pVideoDriver;
+	irr::scene::ISceneManager* _pSceneManager;
+	irr::gui::IGUIEnvironment* _pGuiEnv;
+
+	cStateManager* _pStateManager;
 	int _nWinWidth;
 	int _nWinHeight;
-
-	SDL_Surface* _pScreen;
-	const int SCREEN_BPP;
-	const int FRAMES_PER_SECOND;
-
-	void _initGL();
-	void _init();
 };

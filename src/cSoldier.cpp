@@ -2,10 +2,28 @@
 
 cSoldier::cSoldier()
 {
-	_pos = cPosition( 3, 3 );
+	_nUpdateFrequency = 250;
 }
 
-void cSoldier::SetNewDestination(int x_cell, int y_cell)
+void cSoldier::Update( IrrlichtDevice* device )
 {
-	_destPos = cPosition( x_cell, y_cell );
+	if( device->getTimer()->getTime() - _nTimeOfLastTick > _nUpdateFrequency )
+	{
+		TickOnPath();
+		_nTimeOfLastTick = device->getTimer()->getTime();
+	}
+}
+
+void cSoldier::ClearPath()
+{
+	_vPath.clear();
+}
+
+void cSoldier::TickOnPath()
+{
+	if( _vPath.size() > 0 )
+	{
+		_position = vector2d<s32>( _vPath.front().X, _vPath.front().Y );
+		_vPath.erase(_vPath.begin());
+	}
 }

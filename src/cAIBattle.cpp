@@ -1,78 +1,43 @@
 #include "cAIBattle.h"
 
-cAIBattle::cAIBattle() :
-SCREEN_BPP(32), FRAMES_PER_SECOND(60)
+using namespace irr;
+
+cAIBattle::cAIBattle( video::E_DRIVER_TYPE driverType )
 {
-	_nWinWidth = 1024;
-	_nWinHeight = 768;
+	_pGameManager = new cGameManager();
+	_pGameManager->Init();
 
-	SDL_Event event;
-	_init();
+	cEventReceiver Receiver;
+	_pIrrDevice = createDevice( driverType, core::dimension2d<u32>(1024, 768) ); 
 
-	bool quit = false;
-	while( !quit )
+	_pVideoDriver = _pIrrDevice->getVideoDriver();
+	_pSceneManager = _pIrrDevice->getSceneManager();
+	_pGuiEnv = _pIrrDevice->getGUIEnvironment();
+
+	_pIrrDevice->setWindowCaption(L"AIBattle - now in Irrlicht Engine");
+	
+	_pStateManager = new cStateManager( _pGameManager );
+	_pStateManager->Init( _pIrrDevice );
+
+	while( _pIrrDevice->run() && _pVideoDriver )
 	{
-		//TODO: Check if there are any SDL_Events to pull, othervice, update and draw outside the loop.
-		_GameStateManager.Update();
-		while( SDL_PollEvent( &event ) )
+		if( _pIrrDevice->isWindowActive() )
 		{
-			_GameStateManager.Update();
-			if( event.type == SDL_QUIT || 
-				( event.type == SDL_KEYDOWN && 
-				  event.key.keysym.sym == SDLK_ESCAPE )
-				)
-				quit = true;
-			else
-				_GameStateManager.HandleInput( &event );
-			Draw();
+			_pVideoDriver->beginScene(true, true, video::SColor(0, 50, 50, 50));
+
+			_pStateManager->Update( _pIrrDevice );
+
+			_pSceneManager->drawAll();
+			_pGuiEnv->drawAll();
+			_pStateManager->Draw( _pIrrDevice );
+
+			_pVideoDriver->endScene();
 		}
-		Draw();
 	}
-
-	//Quit SDL
-    SDL_Quit();
-
+	_pIrrDevice->drop();
 }
 
-void cAIBattle::_initGL()
+void cAIBattle::Draw( IrrlichtDevice* device )
 {
-    //Set clear color
-    glClearColor( 0, 0, 0, 0 );
-
-    //Set projection
-    glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-    glOrtho( 0, _nWinWidth, _nWinHeight, 0, -1, 1 );
-
-    //Initialize modelview matrix
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
-}
-
-void cAIBattle::_init()
-{
-    //Initialize SDL
-	SDL_Init(SDL_INIT_VIDEO);
-
-	SDL_Init( SDL_INIT_EVERYTHING );
-
-	atexit(SDL_Quit);
-
-    //Create Window
-	_pScreen = SDL_SetVideoMode( _nWinWidth, _nWinHeight, SCREEN_BPP, SDL_DOUBLEBUF | SDL_SWSURFACE );
-
-    //Initialize OpenGL
-    _initGL();
-
-    //Set caption
-    SDL_WM_SetCaption( "AIBattle", NULL );
-}
-
-void cAIBattle::Draw()
-{
-	SDL_FillRect( _pScreen,NULL, 0x000000 ); //Clear screen
-
-	_GameStateManager.Draw( _pScreen );
-
-	SDL_Flip( _pScreen );
+	_pStateManager->Draw( device );
 }

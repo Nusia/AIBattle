@@ -1,148 +1,174 @@
 #include "cInGameState.h"
 
-cInGameState::cInGameState( cMouse* pMouse ) : 
-_pMouse( pMouse ), 
-_isMouseScrollCamera( false )
-{
-}
-
-void cInGameState::Init()
+void cInGameState::Init( IrrlichtDevice* device )
 {
 	std::cout << "Initiating ingame state.\n";
-	map.Init();
 	
-	cam_pos_ = cPosition(0, 0);
+	_bIsDone = false;
+
+	_pEventReceiver = new cEventReceiver();
+	device->setEventReceiver( _pEventReceiver );
+
+	_fCamZoom = 0;
+
+	_pVideoDriver = device->getVideoDriver();
+	_pSceneManager = device->getSceneManager();
+	_pGUIEnv = device->getGUIEnvironment();
+
+	_pSceneManager->addCameraSceneNode( 
+		0, 
+		core::vector3df( 0, 0, 100 ), 
+		core::vector3df( 0, 0, 5 ) );
 		
-	_pCharacterPlayer01Sprite = cImageHelper::LoadImage("../resources/character_basic_green.png");
-	_pCharacterPlayer02Sprite = cImageHelper::LoadImage("../resources/character_basic_red.png");
-	_pGround = cImageHelper::LoadImage("../resources/ground.png");
-	_pWall = cImageHelper::LoadImage("../resources/wall.png");
+	_pCharacterPlayer01Sprite = _pVideoDriver->getTexture("../resources/character_basic_green.png");
+	_pVideoDriver->makeColorKeyTexture( _pCharacterPlayer01Sprite, core::position2d<s32>(1,1) );
 	
+	_pCharacterPlayer02Sprite = _pVideoDriver->getTexture("../resources/character_basic_red.png");
+	_pVideoDriver->makeColorKeyTexture( _pCharacterPlayer02Sprite, core::position2d<s32>(1,1) );
+
+	_pGround = _pVideoDriver->getTexture("../resources/ground.png");
+	_pWall = _pVideoDriver->getTexture("../resources/wall.png");
+	
+	_pFont = _pGUIEnv->getFont("../resources/fonts/larabie08.png");
+
+	_pVideoDriver->getMaterial2D().TextureLayer[0].BilinearFilter = true;
+	_pVideoDriver->getMaterial2D().AntiAliasing = video::EAAM_FULL_BASIC;
+
+	_pChar01Node = _pSceneManager->addCubeSceneNode();
+	_pChar01Node->setMaterialFlag(video::EMF_LIGHTING, false);
+	_pChar01Node->setPosition( core::vector3df( 0, 0, 10 ) );
+	_pChar01Node->setMaterialTexture(0, _pCharacterPlayer01Sprite);
+
+	cMap map = *(_pGameManager->GetMap());
+	std::vector< std::vector< int >> typemap = map.GetMap();
+	for( int c = 0; c < MAP_COLS; ++c )
+		for( int r = 0; r < MAP_ROWS; ++r )
+		{
+			_ppNodes[c][r] = _pSceneManager->addCubeSceneNode();
+			if( typemap[c][r] == map.WALL )
+			{
+				_ppNodes[c][r]->setPosition( core::vector3df( -c*10, -r*10, 10 ) );
+				_ppNodes[c][r]->setMaterialTexture(0, _pWall);
+			}
+			else if( typemap[c][r] == map.WALKABLE )
+			{
+				_ppNodes[c][r]->setPosition( core::vector3df( -c*10, -r*10, 0 ) );
+				_ppNodes[c][r]->setMaterialTexture(0, _pGround);
+			}
+			_ppNodes[c][r]->setMaterialFlag(video::EMF_LIGHTING, false);
+		}
+
+	MoveCamera( 
+		map.GetPlayer01Pos().X * 10, 
+		map.GetPlayer01Pos().Y * 10, 
+		0 );
+
 	std::cout << "Ingame state ready.\n";
 }
 
-void cInGameState::HandleInput( SDL_Event* event )
+void cInGameState::Update( IrrlichtDevice* device )
 {
-	//SDL_GetMouseState( &cX, &cY );
-	if( event->type == SDL_KEYDOWN )
-	{
-		if( event->key.keysym.sym == SDLK_DOWN )
-			cam_pos_.y += 25;
-		if( event->key.keysym.sym == SDLK_UP && cam_pos_.y > 0 )
-			cam_pos_.y -= 25;
-		if( event->key.keysym.sym == SDLK_RIGHT )
-			cam_pos_.x += 25;
-		if( event->key.keysym.sym == SDLK_LEFT && cam_pos_.x > 0)
-			cam_pos_.x -= 25;
-	}
-	
-	cAStar a_star( map.GetMap(), map.GetPlayersPos() );
-	if( event->type == SDL_MOUSEBUTTONDOWN )
-	{
-		if( event->button.button == SDL_BUTTON_LEFT )
-		{
-			cPosition cell_pos;
-			cell_pos.x = (int)floorf(
-				( (event->motion.x + cam_pos_.x) / 
-				( (float)(MAP_COLS*TILE_WIDTH) / MAP_COLS) ) );
+	_pGameManager->InGameUpdate( device );
 
-			cell_pos.y = (int)floorf( 
-				((event->motion.y + cam_pos_.y) / 
-				((float)(MAP_ROWS*TILE_HEIGHT) / MAP_ROWS) ) );
+	if( _pEventReceiver->IsKeyDown( irr::KEY_ESCAPE ) )
+		_bIsDone = true;
 
-			if( map.IsPosWalkable( cell_pos ) )
-			{
-				tmp_list_.clear();
-				tmp_list_ = a_star.GetBestPath( cell_pos, map.GetPlayer01Pos() );
-				tmp_list_.push_back( cell_pos );
-			}
-		}
-		if( event->button.button == SDL_BUTTON_MIDDLE )
-		{
-			_isMouseScrollCamera = true;
-			_posMouseScrollOrigo = _pMouse->GetCurrentPos();
-		}
-	}
-	if( event->type == SDL_MOUSEBUTTONUP )
-	{
-		if( event->button.button == SDL_BUTTON_MIDDLE )
-			_isMouseScrollCamera = false;
-	}
-	map.HandleEvent( event );
-}
-
-void cInGameState::Update()
-{
+	cMap map = *(_pGameManager->GetMap());
 	if( !tmp_list_.empty() )
 	{
 		map.SetPlayer01Pos( tmp_list_.front() );
 		tmp_list_.erase( tmp_list_.begin() );
 	}
-	if( _isMouseScrollCamera )
+	
+	double delta = 5;
+	irr::core::vector3df tmpPos;
+	f32 zDelta = _fCamZoom - _pEventReceiver->MouseState.MouseWheelDelta*10;
+
+	if( _pEventReceiver->IsAnyKeyDown() || _pEventReceiver->GetMouseState().IsButtonPressed() )
 	{
-		cam_pos_.x += floor( (_pMouse->GetCurrentPos().x - _posMouseScrollOrigo.x) / 10.f );
-		cam_pos_.y += floor( (_pMouse->GetCurrentPos().y - _posMouseScrollOrigo.y) / 10.f );
+		for( int c = 0; c < MAP_COLS; ++c )
+			for( int r = 0; r < MAP_ROWS; ++r )
+			{
+				tmpPos = _ppNodes[c][r]->getPosition();
+				
+				if( _pEventReceiver->IsKeyDown( irr::KEY_KEY_W ) )
+					tmpPos.Y -= delta;
+				if( _pEventReceiver->IsKeyDown( irr::KEY_KEY_S ) )
+					tmpPos.Y += delta;
+				if( _pEventReceiver->IsKeyDown( irr::KEY_KEY_A ) )
+					tmpPos.X -= delta;
+				if( _pEventReceiver->IsKeyDown( irr::KEY_KEY_D ) )
+					tmpPos.X += delta;
+				tmpPos.Z -= zDelta;
+				
+				_ppNodes[c][r]->setPosition( tmpPos );
+			}
 	}
+	tmpPos = _ppNodes[0][0]->getPosition();
+	tmpPos.X -= _pGameManager->GetPlayer(1)->GetPosition().X * 10;
+	tmpPos.Y -= _pGameManager->GetPlayer(1)->GetPosition().Y * 10;
+	if( map.GetMap()[0][0] == map.WALKABLE ) 
+		tmpPos.Z += 10;
+	_pChar01Node->setPosition(tmpPos);
+
+	_fCamZoom = _pEventReceiver->MouseState.MouseWheelDelta*10;
 }
 
-void cInGameState::Draw( SDL_Surface* screen )
+void cInGameState::Draw( IrrlichtDevice* device )
 {
-	SDL_Rect srect, drect;
-	srect.x = 0;
-	srect.y = 0;
-	srect.w = 64;
-	drect.w = TILE_WIDTH;
-	std::vector< std::vector< int >> map_ = map.GetMap();
+	device->getVideoDriver()->draw2DRectangle(
+		video::SColor( 200, 0, 0, 0 ), 
+		core::rect<s32>(5, 5, 200, 60) );
 
-	for( int col = 0; col < MAP_COLS; ++col )
-	{
-		for( int row = 0; row < MAP_ROWS; ++row )
-		{
-			srect.h = 64;
-			drect.h = TILE_HEIGHT;
-			drect.x = col * TILE_WIDTH - cam_pos_.x; 
-			drect.y = (Sint16)(row * TILE_HEIGHT - cam_pos_.y);
-
-			switch( map_[col][row] )
-			{
-			case map.WALL: 
-				srect.h = 64;
-				drect.h = TILE_HEIGHT;
-				SDL_BlitSurface( _pWall, &srect, screen, &drect );
-				break;
-
-			case map.WALKABLE:
-				drect.h = TILE_HEIGHT;
-				SDL_BlitSurface( _pGround, &srect, screen, &drect );
-				break;
-			}
-
-			if( map.GetPlayer01Pos().x == col && map.GetPlayer01Pos().y == row )
-			{
-				srect.h = 64;
-				drect.h = TILE_HEIGHT;
-				drect.y = (Sint16)(row * TILE_HEIGHT - cam_pos_.y);
-				SDL_BlitSurface( _pCharacterPlayer01Sprite, &srect, screen, &drect );
-			}
-			else if( map.GetPlayersPos()[0].x == col && map.GetPlayersPos()[0].y == row )
-			{
-				srect.h = 64;
-				drect.h = TILE_HEIGHT;
-				drect.y = (Sint16)(
-					(row * TILE_HEIGHT * 0.75 - cam_pos_.y) - 
-					(TILE_HEIGHT * 0.5));
-				SDL_BlitSurface( _pCharacterPlayer02Sprite, &srect, screen, &drect );
-			}
-		}
-	}
+	_pFont->draw(	L"WASD: Move camera.",
+                    core::rect<s32>(10,10,100,20),
+					video::SColor(255,255,255,255) );
+	_pFont->draw(	L"Mousescroll: Zoom.",
+                    core::rect<s32>(10,25,100,35),
+					video::SColor(255,255,255,255) );
+	_pFont->draw(	L"ESC: Go back.",
+                    core::rect<s32>(10,40,100,50),
+					video::SColor(255,255,255,255) );
 }
 
 bool cInGameState::IsDone()
 {
-	return false;
+	return _bIsDone;
 }
 
 int cInGameState::GetNextState()
 {
 	return PREGAME;
+}
+
+void cInGameState::MoveCamera( int deltaX, int deltaY, int deltaZ )
+{
+	cMap map = *(_pGameManager->GetMap());
+	if( !tmp_list_.empty() )
+	{
+		map.SetPlayer01Pos( tmp_list_.front() );
+		tmp_list_.erase( tmp_list_.begin() );
+	}
+	
+	irr::core::vector3df tmpPos;
+
+	for( int c = 0; c < MAP_COLS; ++c )
+		for( int r = 0; r < MAP_ROWS; ++r )
+		{
+			tmpPos = _ppNodes[c][r]->getPosition();
+
+			tmpPos.X += deltaX;
+			tmpPos.Y += deltaY;
+			tmpPos.Z += deltaZ;
+				
+			_ppNodes[c][r]->setPosition( tmpPos );
+		}
+
+
+	tmpPos = _ppNodes[0][0]->getPosition();
+	tmpPos.X -= map.GetPlayer01Pos().X * 10;
+	tmpPos.Y -= map.GetPlayer01Pos().Y * 10;
+	if( map.GetMap()[0][0] == map.WALKABLE ) 
+		tmpPos.Z += 10;
+	_pChar01Node->setPosition(tmpPos);
 }

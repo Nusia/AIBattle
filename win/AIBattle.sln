@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AIBattle", "AIBattle.vcproj", "{0C8B688A-AEE8-4A83-B3ED-6B2FA7F93DB8}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AIBattle", "AIBattle.vcxproj", "{0C8B688A-AEE8-4A83-B3ED-6B2FA7F93DB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

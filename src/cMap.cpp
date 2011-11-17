@@ -7,8 +7,8 @@ cMap::cMap()
 void cMap::Init()
 {
 	std::cout << "Initiating map.\n";
-	_player01Pos = cPosition( 0, 0 );
-	_player02Pos = cPosition( 0, 1 );
+	_player01Pos = irr::core::vector2d<irr::s32>( 0, 0 );
+	_player02Pos = irr::core::vector2d<irr::s32>( 0, 1 );
 
 	_loadMap();
 
@@ -19,13 +19,13 @@ void cMap::Update()
 {
 }
 //
-void cMap::Draw( SDL_Surface* screen )
+void cMap::Draw( irr::IrrlichtDevice* device )
 {
 }
 //
-bool cMap::IsPosWalkable( cPosition pos )
+bool cMap::IsPosWalkable( irr::core::vector2d<irr::s32> pos )
 {
-	return _vMap[pos.x][pos.y] == WALKABLE;
+	return _vMap[pos.X][pos.Y] == WALKABLE;
 }
 //
 void cMap::_loadMap()
@@ -47,14 +47,14 @@ void cMap::_loadMap()
 				c -= 48;
 				if ( c == PLAYER01 )
 				{
-					_player01Pos.x = col;
-					_player01Pos.y = row;
+					_player01Pos.X = col;
+					_player01Pos.Y = row;
 					tmp.push_back( 0 );
 				}
 				else if ( c == PLAYER02 )
 				{
-					_player02Pos.x = col;
-					_player02Pos.y = row;
+					_player02Pos.X = col;
+					_player02Pos.Y = row;
 					tmp.push_back( 0 );
 				}
 				else
@@ -85,19 +85,13 @@ void cMap::_resetMap()
 	}
 }
 //
-std::vector<cPosition> cMap::GetPlayersPos()
+std::vector<irr::core::vector2d<irr::s32>> cMap::GetPlayersPos()
 {
 	//TODO: This will have to check what unit that wanna move and
-	//return the cPositions of all units but himself.
+	//return the irr::core::vector2d<irr::s32>s of all units but himself.
 
-	std::vector<cPosition> tmp_list;
+	std::vector<irr::core::vector2d<irr::s32>> tmp_list;
 	//tmp_list.push_back( _player01Pos );
 	tmp_list.push_back( _player02Pos );
 	return tmp_list;
-}
-//
-//  TMP *****
-//
-void cMap::HandleEvent( SDL_Event *event )
-{
 }

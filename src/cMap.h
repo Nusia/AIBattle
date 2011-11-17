@@ -2,18 +2,16 @@
 
 #define MAP_COLS 60
 #define MAP_ROWS 40
-#define TILE_WIDTH 64
-#define TILE_HEIGHT 64 
+#define TILE_WIDTH 64.0f
+#define TILE_HEIGHT 64.0f
 
+#include <irrlicht.h>
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "SDL.h"
-#include "SDL_opengl.h"
-#include "SDL_image.h"
 
-#include "cPosition.h"
-#include "cImageHelper.h"
+
+using namespace irr;
 
 class cMap
 {
@@ -23,32 +21,28 @@ public:
 	cMap();
 	void Init();
 	void Update();
-	void Draw( SDL_Surface* screen );
+	void Draw( irr::IrrlichtDevice* device );
 
-	bool IsPosWalkable( cPosition pos );
+	bool IsPosWalkable( irr::core::vector2d<irr::s32> pos );
 
 	//Set & Get
 	void 
-		SetPlayer01Pos( cPosition unit_pos ) { _player01Pos = unit_pos; }
+		SetPlayer01Pos( irr::core::vector2d<irr::s32> unit_pos ) { _player01Pos = unit_pos; }
 
-	cPosition cMap::GetPlayer01Pos() { return _player01Pos; }
+	irr::core::vector2d<irr::s32> cMap::GetPlayer01Pos() { return _player01Pos; }
 
-	std::vector<cPosition> cMap::GetPlayersPos();
+	std::vector<irr::core::vector2d<irr::s32>> cMap::GetPlayersPos();
 
 	std::vector<std::vector<int>> 
 		GetMap() const { return _vMap; }
-
-	//TMP
-	void HandleEvent( SDL_Event *event );
-
 
 private:
 	//Variables
 	//---------
 	std::vector< std::vector<int> > _vMap;
 
-	cPosition _player01Pos;
-	cPosition _player02Pos;
+	irr::core::vector2d<irr::s32> _player01Pos;
+	irr::core::vector2d<irr::s32> _player02Pos;
 
 	//Functions
 	//---------

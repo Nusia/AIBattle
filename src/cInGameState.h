@@ -1,34 +1,51 @@
+#pragma once
+
+#include <irrlicht.h>
+#include "cGameManager.h"
+#include "cEventReceiver.h"
 #include "iGameState.h"
 #include "cAStar.h"
-#include "cMouse.h"
 #include "Math.h"
 
+using namespace irr;
 class cInGameState : public iGameState
 {
 public:
-	cInGameState( cMouse* pMouse);
-	void Init();
-	void HandleInput( SDL_Event* event );
-	void Update();
-	void Draw( SDL_Surface* screen );
+	cInGameState( cGameManager* gameManager ) : _pGameManager(gameManager) {};
+	void Init( IrrlichtDevice* device );
+	void Update( IrrlichtDevice* device );
+	void Draw( IrrlichtDevice* device );
 	bool IsDone();
 	int GetNextState();
+	void ChangeState() {};
 
 private:
+	//Functions
+	//---------
+	void MoveCamera( int deltaX, int deltaY, int deltaZ );
 	//Variables
 	//---------
-	cMap map;
-	std::vector< cPosition > tmp_list_;
+	cGameManager* _pGameManager;
+	//cMap map;
+	std::vector< irr::core::vector2d<irr::s32> > tmp_list_;
+	scene::ISceneNode* _ppNodes[MAP_COLS][MAP_ROWS];
+	scene::ISceneNode* _pChar01Node;
 
-	cPosition cam_pos_;
+	f32 _fCamZoom;
+
+	video::IVideoDriver* _pVideoDriver;
+	scene::ISceneManager* _pSceneManager;
+	gui::IGUIEnvironment* _pGUIEnv;
 	
-	SDL_Surface* _pCharacterPlayer01Sprite;
-	SDL_Surface* _pCharacterPlayer02Sprite;
-	SDL_Surface* _pGround;
-	SDL_Surface* _pWall;
+	video::ITexture* _pCharacterPlayer01Sprite;
+	video::ITexture* _pCharacterPlayer02Sprite;
+	video::ITexture* _pGround;
+	video::ITexture* _pWall;
+	gui::IGUIFont* _pFont;
 
-	bool _isMouseScrollCamera;
-	cPosition _posMouseScrollOrigo;
+	cEventReceiver* _pEventReceiver;
 
-	cMouse* _pMouse;
+	scene::ISceneNode* n;
+
+	bool _bIsDone;
 };

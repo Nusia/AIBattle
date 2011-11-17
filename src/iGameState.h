@@ -1,19 +1,19 @@
 #pragma once
 
-#include "cMouse.h"
-#include "SDL.h"
+#include <irrlicht.h>
+#include "cEventReceiver.h"
 
 class cMouse;
 
 class iGameState
 {
 public:
-	virtual void Init() = 0;
-	virtual void HandleInput( SDL_Event* event ) = 0;
-	virtual void Update() = 0;
-	virtual void Draw( SDL_Surface* screen ) = 0;
+	virtual void Init( irr::IrrlichtDevice* device ) = 0;
+	virtual void Update(irr::IrrlichtDevice* device ) = 0;
+	virtual void Draw( irr::IrrlichtDevice* device ) = 0;
 	virtual bool IsDone() = 0;
 	virtual int GetNextState() = 0;
+	virtual void ChangeState() = 0;
 };
 
 const enum{ PREGAME, INGAME };

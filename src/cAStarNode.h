@@ -1,25 +1,25 @@
 #pragma once
 
-#include "cPosition.h"
+
 
 class cAStarNode
 {
 private:
-	cPosition coordinate;
+	irr::core::vector2d<irr::s32> coordinate;
 	cAStarNode* parent;
 	bool walkable;
 
 public:
 	cAStarNode() {};
 	cAStarNode( 
-		cPosition _coordinate,
+		irr::core::vector2d<irr::s32> _coordinate,
 		bool _walkable
 		) 
 		: coordinate(_coordinate), walkable(_walkable) {};
 
 	void set_parent( cAStarNode* p ) { parent = p; }
 	cAStarNode* get_parent() { return parent; }
-	cPosition get_coordinate() { return coordinate; }
+	irr::core::vector2d<irr::s32> get_coordinate() { return coordinate; }
 	void set_walkable( bool w ) { walkable = w; }
 	bool is_walkable() { return walkable; }
 };
