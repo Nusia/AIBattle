@@ -1,6 +1,7 @@
 #pragma once
 
 #include <irrlicht.h>
+#include "driverChoice.h"
 #include <vector>
 #include <iterator>
 #include "iGameState.h"
@@ -28,12 +29,25 @@ struct sAppContext
 	IrrlichtDevice*	device;
 	s32				counter;
 	iGameState*		gameState;
+	int				stateToShow;
 };
 
 enum
 {
-	GUI_ID_QUIT_BUTTON = 101,
-	GUI_ID_START_GAME_BUTTON, 
+	GUI_ID_START_GAME = 101, 
+	GUI_ID_QUIT,
+	GUI_ID_SAVE_AI_SETTINGS, 
+	GUI_ID_LOAD_AI_SETTINGS,
+	GUI_ID_SHOW_MAP,
+	GUI_ID_SHOW_SETTINGS,
+	GUI_ID_HELP, 
+	GUI_ID_ABOUT
+};
+
+enum
+{
+	SHOW_MAP = 1,
+	SHOW_SETTINGS
 };
 
 class cPreGameEventReceiver : public IEventReceiver
@@ -79,38 +93,50 @@ public:
 		//GUI EVENTS
 		if( event.EventType == EET_GUI_EVENT )
 		{
-			s32 id = event.GUIEvent.Caller->getID();
 			IGUIEnvironment* env = Context.device->getGUIEnvironment();
 
 			switch(event.GUIEvent.EventType)
 			{
-				case EGET_BUTTON_CLICKED:
-					switch(id)
-					{
-					case GUI_ID_QUIT_BUTTON:
-						Context.device->closeDevice();
-						return true;
-
-					case GUI_ID_START_GAME_BUTTON:
-						Context.gameState->ChangeState();
-						return true;
-
-					default:
-						return false;
-					}
-					break;
-
-				default:
-					break;
+			case EGET_MENU_ITEM_SELECTED:
+				OnMenuItemSelected( (IGUIContextMenu*)event.GUIEvent.Caller );
+				break;
+			default:
+				break;
 			}
 		}
 
 		return false;
     }
 
+	void OnMenuItemSelected( irr::gui::IGUIContextMenu* menu )
+	{
+		s32 id = menu->getItemCommandId(menu->getSelectedItem());
+		irr::gui::IGUIEnvironment* env = Context.device->getGUIEnvironment();
+
+		switch( id )
+		{
+		case GUI_ID_QUIT:
+			Context.device->closeDevice();
+			break;
+
+		case GUI_ID_START_GAME:
+			Context.gameState->ChangeState();
+			break;
+
+		case GUI_ID_SHOW_MAP:
+			Context.stateToShow = SHOW_MAP;
+			break;
+
+		case GUI_ID_SHOW_SETTINGS:
+			Context.stateToShow = SHOW_SETTINGS;
+			break;
+		}
+	}
+
 private:
 	sAppContext & Context;
 	cMouseState* MouseState;
+	int stateToShow;
 };
 
 class cPreGameState : public iGameState
@@ -145,6 +171,9 @@ private:
 	video::ITexture* _pPlayer;
 	video::ITexture* _pGround;
 	video::ITexture* _pWall;
+
+	irr::gui::IGUIContextMenu* menu;
+	irr::gui::IGUIComboBox* box;
 
 	irr::core::vector2d<irr::s32> _posLastCheckpoint;
 

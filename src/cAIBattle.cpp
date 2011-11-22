@@ -23,7 +23,7 @@ cAIBattle::cAIBattle( video::E_DRIVER_TYPE driverType )
 	{
 		if( _pIrrDevice->isWindowActive() )
 		{
-			_pVideoDriver->beginScene(true, true, video::SColor(0, 50, 50, 50));
+			_pVideoDriver->beginScene(true, true, video::SColor(0, 200, 200, 255));
 
 			_pStateManager->Update( _pIrrDevice );
 

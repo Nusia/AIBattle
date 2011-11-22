@@ -68,8 +68,8 @@ public:
 			// Remember whether each key is down or up
             if (event.EventType == irr::EET_KEY_INPUT_EVENT)
 			{
-                    KeyIsDown[event.KeyInput.Key] = event.KeyInput.PressedDown;
-					_bAnyKeyDown = true;
+                KeyIsDown[event.KeyInput.Key] = event.KeyInput.PressedDown;
+				_bAnyKeyDown = true;
 			}
 			else
 				_bAnyKeyDown = false;
@@ -107,10 +107,17 @@ public:
 			return _bAnyKeyDown;
 		}
 
+		bool* GetKeyDownArray()
+		{
+			return KeyIsDown;
+		}
+
         cEventReceiver()
         {
 			for (u32 i=0; i<KEY_KEY_CODES_COUNT; ++i)
-                        KeyIsDown[i] = false;
+			{
+                KeyIsDown[i] = false;
+			}
         }
 
 private:

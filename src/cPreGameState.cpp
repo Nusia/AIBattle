@@ -5,7 +5,7 @@ void cPreGameState::Init( IrrlichtDevice* device )
 	std::cout << "Initiating pregame state.\n";
 	_bIsDone = false;
 	_posLastCheckpoint = _pGameManager->GetPlayer(1)->GetPosition();
-	topLeftCornerOfMap = position2d<s32>(20, 60);
+	topLeftCornerOfMap = position2d<s32>(30, 65);
 	tileSizeOfMap = 16;
 	//tileSizeOfMap = 1004/MAP_COLS;
 
@@ -17,26 +17,50 @@ void cPreGameState::Init( IrrlichtDevice* device )
 	_pPlayer = driver->getTexture("../resources/character_basic_green.png");
 	_pWall = driver->getTexture("../resources/wall.png");
 	_pGround = driver->getTexture("../resources/ground.png");
-	_pSkin = env->getSkin();
-	//_pFont = env->getFont("fonthaettenschweiler.bmp");
-	//_pFont = env->getBuiltInFont();
 	_pFont10 = env->getFont("../resources/fonts/larabie10.png");
 	_pFont08 = env->getFont("../resources/fonts/larabie08.png");
 	_pFont06 = env->getFont("../resources/fonts/larabie06.png");
-	//_pFont = env->getBuiltInFont();
-	if( _pFont06 )
-		_pSkin->setFont( _pFont08 );
+
+	_pSkin = env->getSkin();
+	_pSkin->setFont( _pFont10 );
 	_pSkin->setFont( env->getBuiltInFont(), gui::EGDF_TOOLTIP );
 
-	env->addButton(rect<s32>(1024-100, 10, 1024-10, 10+40), 0, GUI_ID_QUIT_BUTTON,
-        L"Quit", L"Exits Program");
-	env->addButton(rect<s32>(1024/2 - 50, 10, 1024/2 + 50, 10+40), 0, GUI_ID_START_GAME_BUTTON,
-        L"Start game", L"Starts a match");
+	menu = env->addMenu();
+	
+	menu->addItem(L"Game", -1, true, true);
+	menu->addItem(L"File", -1, true, true);
+	menu->addItem(L"Show", -1, true, true);
+	menu->addItem(L"Help", -1, true, true);
+
+	irr::gui::IGUIContextMenu* submenu;
+	submenu = menu->getSubMenu(0);
+	submenu->addItem(L"Start game", GUI_ID_START_GAME);
+	submenu->addItem(L"Quit", GUI_ID_QUIT);
+
+	submenu = menu->getSubMenu(1);
+	submenu->addItem(L"Save current AIsettings", GUI_ID_SAVE_AI_SETTINGS);
+	submenu->addItem(L"Load AIsettings", GUI_ID_SAVE_AI_SETTINGS);
+
+	submenu = menu->getSubMenu(2);
+	submenu->addItem(L"Show map", GUI_ID_SHOW_MAP);
+	submenu->addItem(L"Show settings", GUI_ID_SHOW_SETTINGS);
+
+	submenu = menu->getSubMenu(3);
+	submenu->addItem(L"Help", GUI_ID_HELP);
+	submenu->addItem(L"About", GUI_ID_ABOUT);
+
+	box = env->addComboBox( 
+		irr::core::rect<irr::s32>( 350, 70, 500 , 90 ), 
+		0, 1 );
+	box->addItem( L"Do nothing");
+	box->addItem( L"Hide");
+	box->addItem( L"Shoot");
 
     // Store the appropriate data in a context structure.
 	context.device = device;
     context.counter = 0;
 	context.gameState = this;
+	context.stateToShow = SHOW_MAP;
 
 	_pEventReceiver = new cPreGameEventReceiver(context);
 	device->setEventReceiver( _pEventReceiver );
@@ -46,121 +70,133 @@ void cPreGameState::Init( IrrlichtDevice* device )
 
 void cPreGameState::Update( IrrlichtDevice* device )
 {
-	cMap map = *(_pGameManager->GetMap());
-	cMouseState tmpMouse = *_pEventReceiver->getMouseState();
-	if( _pEventReceiver->getMouseState()->LeftButtonDown )
+	if( context.stateToShow == SHOW_MAP )
 	{
-		if( GetMapRectangle().isPointInside( tmpMouse.Position ) )
+		if( box->isVisible() )
+			box->setVisible( false );
+
+		cMap map = *(_pGameManager->GetMap());
+		cMouseState tmpMouse = *_pEventReceiver->getMouseState();
+		if( _pEventReceiver->getMouseState()->LeftButtonDown )
 		{
-			std::vector<vector2d<s32>> playerPath = _pGameManager->GetPlayer(1)->GetPath();
-
-			int xCell = (int)floorf(
-				( (tmpMouse.Position.X - GetMapRectangle().UpperLeftCorner.X) / 
-				( (float)(MAP_COLS * tileSizeOfMap) / MAP_COLS ) ) );
-	
-			int yCell = (int)floorf(
-				( (tmpMouse.Position.Y - GetMapRectangle().UpperLeftCorner.Y) / 
-				( (float)(MAP_ROWS * tileSizeOfMap) / MAP_ROWS ) ) );
-
-			if( xCell >= 0 && xCell <= MAP_COLS-1 &&
-				yCell >= 0 && yCell <= MAP_ROWS-1 &&
-				map.IsPosWalkable( vector2d<s32>( xCell, yCell ) ) )
+			if( GetMapRectangle().isPointInside( tmpMouse.Position ) )
 			{
-				vector2d<s32> cellPos(xCell, yCell);
-				if( playerPath.size() < 1 || 
-					!(	playerPath.back().X == cellPos.X && 
-						playerPath.back().Y == cellPos.Y  ) )
+				std::vector<vector2d<s32>> playerPath = _pGameManager->GetPlayer(1)->GetPath();
+
+				int xCell = (int)floorf(
+					( (tmpMouse.Position.X - GetMapRectangle().UpperLeftCorner.X) / 
+					( (float)(MAP_COLS * tileSizeOfMap) / MAP_COLS ) ) );
+	
+				int yCell = (int)floorf(
+					( (tmpMouse.Position.Y - GetMapRectangle().UpperLeftCorner.Y) / 
+					( (float)(MAP_ROWS * tileSizeOfMap) / MAP_ROWS ) ) );
+
+				if( xCell >= 0 && xCell <= MAP_COLS-1 &&
+					yCell >= 0 && yCell <= MAP_ROWS-1 &&
+					map.IsPosWalkable( vector2d<s32>( xCell, yCell ) ) )
 				{
-					cAStar aStar( map.GetMap(), map.GetPlayersPos() );
+					vector2d<s32> cellPos(xCell, yCell);
+					if( playerPath.size() < 1 || 
+						!(	playerPath.back().X == cellPos.X && 
+							playerPath.back().Y == cellPos.Y  ) )
+					{
+						cAStar aStar( map.GetMap(), map.GetPlayersPos() );
 
-					std::vector<vector2d<s32>> tmpList = aStar.GetBestPath( cellPos, _posLastCheckpoint );
-					std::copy( tmpList.begin()+1, tmpList.end(), std::back_inserter( playerPath ) );
-					playerPath.push_back( cellPos );
+						std::vector<vector2d<s32>> tmpList = aStar.GetBestPath( cellPos, _posLastCheckpoint );
+						std::copy( tmpList.begin()+1, tmpList.end(), std::back_inserter( playerPath ) );
+						playerPath.push_back( cellPos );
 
-					_pGameManager->GetPlayer(1)->SetPath( playerPath );
-					_posLastCheckpoint = cellPos;
+						_pGameManager->GetPlayer(1)->SetPath( playerPath );
+						_posLastCheckpoint = cellPos;
+					}
 				}
 			}
 		}
+		else if( _pEventReceiver->getMouseState()->RightButtonDown )
+		{
+			_pGameManager->GetPlayer(1)->ClearPath();
+			_posLastCheckpoint = _pGameManager->GetPlayer(1)->GetPosition();
+		}
 	}
-	else if( _pEventReceiver->getMouseState()->RightButtonDown )
+	else if( context.stateToShow == SHOW_SETTINGS )
 	{
-		_pGameManager->GetPlayer(1)->ClearPath();
-		_posLastCheckpoint = _pGameManager->GetPlayer(1)->GetPosition();
+		if( !box->isVisible() )
+			box->setVisible( true );
 	}
-	//Context.mapRect.isPointInside( 
-	//vector2d<s32>(event.MouseInput.X, event.MouseInput.Y) ) )
-	//		{
 	
 }
 
 void cPreGameState::Draw( IrrlichtDevice* device )
 {
-	cMap map = *(_pGameManager->GetMap());
-	IVideoDriver* driver = device->getVideoDriver();
-	std::vector<std::vector<int>> map_data = map.GetMap();
-	SColor currentColor;
-	
-	rect<s32> destRect;
-	rect<s32> srcRect = rect<s32>(0, 0, TILE_WIDTH, TILE_HEIGHT);
-	for( int col = 0; col < MAP_COLS; ++col )
+	if( context.stateToShow == SHOW_MAP )
 	{
-		for( int row = 0; row < MAP_ROWS; ++row )
+		cMap map = *(_pGameManager->GetMap());
+		IVideoDriver* driver = device->getVideoDriver();
+		std::vector<std::vector<int>> map_data = map.GetMap();
+		SColor currentColor;
+	
+		rect<s32> destRect;
+		rect<s32> srcRect = rect<s32>(0, 0, TILE_WIDTH, TILE_HEIGHT);
+		for( int col = 0; col < MAP_COLS; ++col )
 		{
-			destRect = rect<s32>(	
-				topLeftCornerOfMap.X + col*tileSizeOfMap, 
-				topLeftCornerOfMap.Y + row*tileSizeOfMap, 
-				topLeftCornerOfMap.X + (col+1)*tileSizeOfMap, 
-				topLeftCornerOfMap.Y + (row+1)*tileSizeOfMap );
-
-			switch( map_data[col][row] )
+			for( int row = 0; row < MAP_ROWS; ++row )
 			{
-			case map.WALKABLE:
-				driver->draw2DImage( _pGround, destRect, srcRect );
-				break;
-			case map.WALL:
-				driver->draw2DImage( _pWall, destRect, srcRect );
-				break;
-			default:
-				currentColor = SColor(255, 255, 255, 255);
-				driver->draw2DRectangle( currentColor, destRect );
-				break;
+				destRect = rect<s32>(	
+					topLeftCornerOfMap.X + col*tileSizeOfMap, 
+					topLeftCornerOfMap.Y + row*tileSizeOfMap, 
+					topLeftCornerOfMap.X + (col+1)*tileSizeOfMap, 
+					topLeftCornerOfMap.Y + (row+1)*tileSizeOfMap );
+
+				switch( map_data[col][row] )
+				{
+				case map.WALKABLE:
+					driver->draw2DImage( _pGround, destRect, srcRect );
+					break;
+				case map.WALL:
+					driver->draw2DImage( _pWall, destRect, srcRect );
+					break;
+				default:
+					currentColor = SColor(255, 255, 255, 255);
+					driver->draw2DRectangle( currentColor, destRect );
+					break;
+				}
 			}
 		}
+
+		int tmpX, tmpY;
+		vector2d<s32> currPos;
+		vector2d<s32> prevPos = vector2d<s32>(
+			topLeftCornerOfMap.X + _pGameManager->GetPlayer(1)->GetPosition().X*tileSizeOfMap + (float)tileSizeOfMap/2, 
+			topLeftCornerOfMap.Y + _pGameManager->GetPlayer(1)->GetPosition().Y*tileSizeOfMap + (float)tileSizeOfMap/2
+			);
+
+		std::vector< vector2d<s32> > tmpPathList = _pGameManager->GetPlayer(1)->GetPath();
+
+		for( std::vector<vector2d<s32>>::iterator it = tmpPathList.begin(); it != tmpPathList.end(); ++it )
+		{
+			tmpX = topLeftCornerOfMap.X + (*it).X*tileSizeOfMap + (float)tileSizeOfMap/2;
+			tmpY = topLeftCornerOfMap.Y + (*it).Y*tileSizeOfMap + (float)tileSizeOfMap/2;
+			currPos = vector2d<s32>(tmpX, tmpY);
+			if( prevPos.X > -1 )
+				draw2DLine( driver, prevPos, currPos, SColor( 255, 0, 0, 0 ), 5 );
+			prevPos = currPos;
+		}
+
+		tmpX = topLeftCornerOfMap.X + _pGameManager->GetPlayer(1)->GetPosition().X * tileSizeOfMap;
+		tmpY = topLeftCornerOfMap.Y + _pGameManager->GetPlayer(1)->GetPosition().Y * tileSizeOfMap;
+		driver->draw2DImage( 
+			_pPlayer, 
+			rect<s32>( tmpX, tmpY, tmpX + tileSizeOfMap, tmpY + tileSizeOfMap ), 
+			srcRect );	
 	}
-
-	int tmpX, tmpY;
-	vector2d<s32> currPos;
-	vector2d<s32> prevPos = vector2d<s32>(
-		topLeftCornerOfMap.X + _pGameManager->GetPlayer(1)->GetPosition().X*tileSizeOfMap + (float)tileSizeOfMap/2, 
-		topLeftCornerOfMap.Y + _pGameManager->GetPlayer(1)->GetPosition().Y*tileSizeOfMap + (float)tileSizeOfMap/2
-		);
-
-	std::vector< vector2d<s32> > tmpPathList = _pGameManager->GetPlayer(1)->GetPath();
-
-	for( std::vector<vector2d<s32>>::iterator it = tmpPathList.begin(); it != tmpPathList.end(); ++it )
+	else if( context.stateToShow == SHOW_SETTINGS )
 	{
-		tmpX = topLeftCornerOfMap.X + (*it).X*tileSizeOfMap + (float)tileSizeOfMap/2;
-		tmpY = topLeftCornerOfMap.Y + (*it).Y*tileSizeOfMap + (float)tileSizeOfMap/2;
-		currPos = vector2d<s32>(tmpX, tmpY);
-		if( prevPos.X > -1 )
-			draw2DLine( driver, prevPos, currPos, SColor( 255, 0, 0, 0 ), 5 );
-		prevPos = currPos;
+		_pFont10->draw(	L"If enemy detected: ",
+						core::rect<s32>(130,70,300,90),
+						video::SColor(255,0,0,0) );
 	}
 
-	tmpX = topLeftCornerOfMap.X + _pGameManager->GetPlayer(1)->GetPosition().X * tileSizeOfMap;
-	tmpY = topLeftCornerOfMap.Y + _pGameManager->GetPlayer(1)->GetPosition().Y * tileSizeOfMap;
-	driver->draw2DImage( 
-		_pPlayer, 
-		rect<s32>( tmpX, tmpY, tmpX + tileSizeOfMap, tmpY + tileSizeOfMap ), 
-		srcRect );	
-
-	_pFont08->draw(	L"LeftMouse : Append path.",
-                    core::rect<s32>(130,10,300,20),
-					video::SColor(255,255,255,255) );
-	_pFont08->draw(	L"RightMouse : Clear path.",
-                    core::rect<s32>(130,25,300,45),
-					video::SColor(255,255,255,255) );
+	menu->bringToFront( menu );
 }
 
 bool cPreGameState::IsDone()
