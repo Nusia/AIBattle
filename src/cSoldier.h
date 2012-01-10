@@ -1,8 +1,11 @@
-#pragma once
+#ifndef _SOLDIER_H_
+#define _SOLDIER_H_
 
 #include <iostream>
 #include <irrlicht.h>
 #include <vector>
+#include "cAISettings.h"
+#include "cSoldierData.h"
 
 using namespace irr;
 using namespace core;
@@ -11,28 +14,32 @@ class cSoldier
 {
 public:
 	cSoldier();
-	void Update( IrrlichtDevice* device );
+	void Update( IrrlichtDevice* device, cSoldierData* player02 );
 
-	void		SetPosition( vector2d<s32> pos ) { _position = pos; };
-	void		SetPath( std::vector< vector2d<s32> > path ) { _vPath = path; };
-	void		SetUpdateFrequency( u32 newFrequency ) { _nUpdateFrequency = newFrequency; };
+	void		SetPosition( vector2d<s32> pos ){ _pSoldierData->SetPosition(pos); };
+	void		SetPath( std::vector<vector2d<s32>> path ){ _pSoldierData->SetPath(path); };
+	void		SetUpdateFrequency( u32 newFrequency ){ _nUpdateFrequency = newFrequency; };
 
-	vector2d<s32>					GetPosition() { return _position; };
-	std::vector< vector2d<s32> >	GetPath() { return _vPath; };
+	vector2d<s32>					GetPosition(){ return _pSoldierData->GetPosition(); };
+	std::vector<vector2d<s32>>	GetPath(){ return _pSoldierData->GetPath(); };
+	cAISettings*					GetAISettings(){ return _pAISettings; };
 
-	void ClearPath();
+	void ClearPath(){ _pSoldierData->ClearPath(); };
+
+	cSoldierData*	GetSoldierData(){ return _pSoldierData; };
 
 private:
 	//Funcs
-	//-----
 	void		TickOnPath();
 
 	// Vars
-	//-----
-	vector2d<s32>						_position;
-	std::vector< vector2d<s32> >		_vPath;
-
 	u32									_nTimeOfLastTick;
 	u32									_nUpdateFrequency;
+
+	cSoldierData*						_pSoldierData;
+	cAISettings*						_pAISettings;
+
 };
+
+#endif
 

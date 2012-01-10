@@ -49,12 +49,25 @@ void cPreGameState::Init( IrrlichtDevice* device )
 	submenu->addItem(L"Help", GUI_ID_HELP);
 	submenu->addItem(L"About", GUI_ID_ABOUT);
 
-	box = env->addComboBox( 
-		irr::core::rect<irr::s32>( 350, 70, 500 , 90 ), 
+	rangeList.push_back(3);
+	rangeList.push_back(5);
+	rangeList.push_back(10);
+	rangeList.push_back(15);
+
+	alertRangeBox = env->addComboBox( 
+		irr::core::rect<irr::s32>( 400, 70, 450 , 90 ), 
 		0, 1 );
-	box->addItem( L"Do nothing");
-	box->addItem( L"Hide");
-	box->addItem( L"Shoot");
+	alertRangeBox->addItem( L"3");
+	alertRangeBox->addItem( L"5");
+	alertRangeBox->addItem( L"10");
+	alertRangeBox->addItem( L"15");
+
+	alertActionBox = env->addComboBox( 
+		irr::core::rect<irr::s32>( 650, 70, 800 , 90 ), 
+		0, 1 );
+	alertActionBox->addItem( L"Do nothing");
+	alertActionBox->addItem( L"Do nothing");
+	alertActionBox->addItem( L"Do nothing");
 
     // Store the appropriate data in a context structure.
 	context.device = device;
@@ -72,8 +85,10 @@ void cPreGameState::Update( IrrlichtDevice* device )
 {
 	if( context.stateToShow == SHOW_MAP )
 	{
-		if( box->isVisible() )
-			box->setVisible( false );
+		if( alertRangeBox->isVisible() )
+			alertRangeBox->setVisible( false );
+		if( alertActionBox->isVisible() )
+			alertActionBox->setVisible( false );
 
 		cMap map = *(_pGameManager->GetMap());
 		cMouseState tmpMouse = *_pEventReceiver->getMouseState();
@@ -120,8 +135,10 @@ void cPreGameState::Update( IrrlichtDevice* device )
 	}
 	else if( context.stateToShow == SHOW_SETTINGS )
 	{
-		if( !box->isVisible() )
-			box->setVisible( true );
+		if( !alertRangeBox->isVisible() )
+			alertRangeBox->setVisible( true );
+		if( !alertActionBox->isVisible() )
+			alertActionBox->setVisible( true );
 	}
 	
 }
@@ -191,8 +208,11 @@ void cPreGameState::Draw( IrrlichtDevice* device )
 	}
 	else if( context.stateToShow == SHOW_SETTINGS )
 	{
-		_pFont10->draw(	L"If enemy detected: ",
-						core::rect<s32>(130,70,300,90),
+		_pFont10->draw(	L"If enemy is within the range of: ",
+						core::rect<s32>(30,70,300,90),
+						video::SColor(255,0,0,0) );
+		_pFont10->draw(	L"Execute action: ",
+						core::rect<s32>(475,70,600,90),
 						video::SColor(255,0,0,0) );
 	}
 
@@ -211,6 +231,8 @@ int cPreGameState::GetNextState()
 
 void cPreGameState::ChangeState()
 {
+	irr::s32 id = alertRangeBox->getSelected();	
+	_pGameManager->GetPlayer(1)->GetAISettings()->SetToCloseAlertDistance( rangeList[id] );
 	_bIsDone = true;
 }
 

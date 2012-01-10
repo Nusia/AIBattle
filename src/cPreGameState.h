@@ -173,7 +173,11 @@ private:
 	video::ITexture* _pWall;
 
 	irr::gui::IGUIContextMenu* menu;
-	irr::gui::IGUIComboBox* box;
+
+	irr::gui::IGUIComboBox* alertRangeBox;
+	std::vector<int> rangeList;
+
+	irr::gui::IGUIComboBox* alertActionBox;
 
 	irr::core::vector2d<irr::s32> _posLastCheckpoint;
 

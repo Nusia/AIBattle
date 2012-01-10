@@ -17,7 +17,7 @@ void cInGameState::Init( IrrlichtDevice* device )
 	}
 
 	_fCamZoom = 0;
-	_pMessageBox = new cMessageBoxInGame( device );
+	cMessageBoxInGame::InitInstance( device );
 
 	_pVideoDriver = device->getVideoDriver();
 	_pSceneManager = device->getSceneManager();
@@ -48,6 +48,11 @@ void cInGameState::Init( IrrlichtDevice* device )
 	_pChar01Node->setPosition( core::vector3df( 0, 0, 10 ) );
 	_pChar01Node->setMaterialTexture(0, _pCharacterPlayer01Sprite);
 
+	_pChar02Node = _pSceneManager->addCubeSceneNode();
+	_pChar02Node->setMaterialFlag(video::EMF_LIGHTING, false);
+	_pChar02Node->setPosition( core::vector3df( 0, 0, 10 ) );
+	_pChar02Node->setMaterialTexture(0, _pCharacterPlayer02Sprite);
+
 	cMap map = *(_pGameManager->GetMap());
 	std::vector< std::vector< int >> typemap = map.GetMap();
 	for( int c = 0; c < MAP_COLS; ++c )
@@ -72,8 +77,8 @@ void cInGameState::Init( IrrlichtDevice* device )
 		map.GetPlayer01Pos().Y * 10, 
 		0 );
 
-	_pMessageBox->AddMessage( "Game started (in pause mode)." );
-	_pMessageBox->AddMessage( "Press SPACE to resume." );
+	cMessageBoxInGame::GetInstance()->AddMessage( "Game started (in pause mode)." );
+	cMessageBoxInGame::GetInstance()->AddMessage( "Press SPACE to resume." );
 	std::cout << "Ingame state ready.\n";
 }
 
@@ -128,6 +133,13 @@ void cInGameState::Update( IrrlichtDevice* device )
 		tmpPos.Z += 10;
 	_pChar01Node->setPosition(tmpPos);
 
+	tmpPos = _ppNodes[0][0]->getPosition();
+	tmpPos.X -= _pGameManager->GetPlayer(2)->GetPosition().X * 10;
+	tmpPos.Y -= _pGameManager->GetPlayer(2)->GetPosition().Y * 10;
+	if( map.GetMap()[0][0] == map.WALKABLE ) 
+		tmpPos.Z += 10;
+	_pChar02Node->setPosition(tmpPos);
+
 	_fCamZoom = _pEventReceiver->MouseState.MouseWheelDelta*10;
 
 	if( _pEventReceiver->IsKeyDown( irr::KEY_ESCAPE ) )
@@ -138,17 +150,17 @@ void cInGameState::Update( IrrlichtDevice* device )
 		if( _bIsRunning )
 		{
 			_bIsRunning = false;
-			_pMessageBox->AddMessage( "Game paused." );
+			cMessageBoxInGame::GetInstance()->AddMessage( "Game paused." );
 		}
 		else
 		{
 			_bIsRunning = true;
 			_nTimeOfLastUpdate = device->getTimer()->getTime();
-			_pMessageBox->AddMessage( "Game resumed." );
+			cMessageBoxInGame::GetInstance()->AddMessage( "Game resumed." );
 		}
 	}
 
-	_pMessageBox->Update( device );
+	cMessageBoxInGame::GetInstance()->Update( device );
 
 	bool* tmpArray = _pEventReceiver->GetKeyDownArray();
 	for (u32 i=0; i<KEY_KEY_CODES_COUNT; ++i)
@@ -159,6 +171,13 @@ void cInGameState::Update( IrrlichtDevice* device )
 
 void cInGameState::Draw( IrrlichtDevice* device )
 {
+	//Line between soldiers
+	/*irr::core::vector3df pos01( _pChar01Node->getPosition() );
+	irr::core::vector3df pos02( _pChar02Node->getPosition() );
+	pos01.Z = pos01.Z - 20;
+	pos02.Z = pos02.Z - 20;
+	device->getVideoDriver()->draw3DLine( pos01, pos02, video::SColor(255, 0, 0, 255) );*/
+
 	//HELP
 	device->getVideoDriver()->draw2DRectangle(
 		video::SColor( 200, 0, 0, 0 ), 
@@ -192,7 +211,7 @@ void cInGameState::Draw( IrrlichtDevice* device )
 		video::SColor(255,255,255,255) );
 
 	//MSG-BOX
-	_pMessageBox->Draw( device );
+	cMessageBoxInGame::GetInstance()->Draw( device );
 }
 
 bool cInGameState::IsDone()

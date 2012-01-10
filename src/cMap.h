@@ -30,6 +30,7 @@ public:
 		SetPlayer01Pos( irr::core::vector2d<irr::s32> unit_pos ) { _player01Pos = unit_pos; }
 
 	irr::core::vector2d<irr::s32> cMap::GetPlayer01Pos() { return _player01Pos; }
+	irr::core::vector2d<irr::s32> cMap::GetPlayer02Pos() { return _player02Pos; }
 
 	std::vector<irr::core::vector2d<irr::s32>> cMap::GetPlayersPos();
 

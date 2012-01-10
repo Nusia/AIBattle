@@ -30,11 +30,12 @@ private:
 	//Variables
 	//---------
 	cGameManager* _pGameManager;
-	cMessageBoxInGame* _pMessageBox;
 
 	std::vector< irr::core::vector2d<irr::s32> > tmp_list_;
 	scene::ISceneNode* _ppNodes[MAP_COLS][MAP_ROWS];
+	
 	scene::ISceneNode* _pChar01Node;
+	scene::ISceneNode* _pChar02Node;
 
 	f32 _fCamZoom;
 

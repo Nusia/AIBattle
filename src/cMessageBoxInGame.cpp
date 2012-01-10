@@ -1,13 +1,28 @@
 #include "cMessageBoxInGame.h"
 
+cMessageBoxInGame* cMessageBoxInGame::_pInstance = NULL;
+
 cMessageBoxInGame::cMessageBoxInGame( IrrlichtDevice* device ) : 
-	WIDTH(400), HEIGHT(100), MAX_NR_MSG(5), 
+	WIDTH(600), HEIGHT(100), MAX_NR_MSG(5), 
 	_nNrOfMessages(0), _nMsgOffset(16), _nStartHeight(16), _bIsScrolling(false),
-	_nBasicColor(200), _nFlashColor(100)
+	_nBasicColor(220), _nFlashColor(150)
 {
-	//_pFont = device->getGUIEnvironment()->getFont("../resources/fonts/larabie10.png");
-	_pFont = device->getGUIEnvironment()->getFont("../resources/fonts/test.png");
+	_pFont = device->getGUIEnvironment()->getFont("../resources/fonts/larabie08_w.png");
 	_nCurrentColor = _nBasicColor;
+}
+
+void cMessageBoxInGame::InitInstance( IrrlichtDevice* device )
+{
+	if(!_pInstance)
+		_pInstance = new cMessageBoxInGame( device );
+}
+
+cMessageBoxInGame* cMessageBoxInGame::GetInstance()
+{
+	if(!_pInstance)
+		exit( EXIT_FAILURE );
+
+	return _pInstance;
 }
 
 void cMessageBoxInGame::Update( IrrlichtDevice* device )
