@@ -10,16 +10,14 @@ using namespace irr;
 class cMessageBoxInGame
 {
 public:
-	static void InitInstance( IrrlichtDevice* device );
 	static cMessageBoxInGame* GetInstance();
-	//cMessageBoxInGame( IrrlichtDevice* device );
-	void Update( IrrlichtDevice* device );
+	void Update();
 	void Draw( IrrlichtDevice* device );
 
 	void AddMessage( const char* text );
 
 private:
-	cMessageBoxInGame( IrrlichtDevice* device );
+	cMessageBoxInGame();
 	static cMessageBoxInGame* _pInstance;
 
 	gui::IGUIFont* _pFont;
@@ -39,4 +37,3 @@ private:
 
 	std::vector< core::stringw > _vMsgList;
 };
-

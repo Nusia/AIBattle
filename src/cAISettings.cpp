@@ -17,17 +17,13 @@ void cAISettings::Update( cSoldierData* player02 )
 	if( tmpDistance < _nToCloseAlertDistance )
 	{
 		if( !_bToClose )
-		{
 			cMessageBoxInGame::GetInstance()->AddMessage( _cToCloseString );
-		}
 		_bToClose = true;
 	}
 	else
 	{
 		if( _bToClose )
-		{
 			cMessageBoxInGame::GetInstance()->AddMessage( _cNotToCloseString );
-		}
 		_bToClose = false;
 	}
 }
@@ -51,8 +47,8 @@ void cAISettings::SetToCloseAlertDistance( int distance )
 
 irr::s32 cAISettings::distanceBetweenPoints( vector2d<s32> p1, vector2d<s32> p2 )
 {
-	float width = abs( p2.X - p1.X );
-	float height = abs( p2.Y - p1.Y );
+	float width = (float)abs( p2.X - p1.X );
+	float height = (float)abs( p2.Y - p1.Y );
 	float hyp = sqrtf( width*width + height*height );
 	return floor32( hyp );
 }

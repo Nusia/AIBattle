@@ -9,6 +9,7 @@
 #include "cAStar.h"
 #include "event.h"
 #include "cMap.h"
+#include "cMapPositionHelper.h"
 
 //#include "cEventReceiver.h"
 

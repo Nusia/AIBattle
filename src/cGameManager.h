@@ -18,6 +18,4 @@ private:
 	cMap*			_pMap;
 	cSoldier*		_pPlayer01;
 	cSoldier*		_pPlayer02;
-
-	vector2d<s32> TMP;
 };

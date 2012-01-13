@@ -2,30 +2,23 @@
 
 cMessageBoxInGame* cMessageBoxInGame::_pInstance = NULL;
 
-cMessageBoxInGame::cMessageBoxInGame( IrrlichtDevice* device ) : 
+cMessageBoxInGame::cMessageBoxInGame() : 
 	WIDTH(600), HEIGHT(100), MAX_NR_MSG(5), 
 	_nNrOfMessages(0), _nMsgOffset(16), _nStartHeight(16), _bIsScrolling(false),
 	_nBasicColor(220), _nFlashColor(150)
 {
-	_pFont = device->getGUIEnvironment()->getFont("../resources/fonts/larabie08_w.png");
 	_nCurrentColor = _nBasicColor;
-}
-
-void cMessageBoxInGame::InitInstance( IrrlichtDevice* device )
-{
-	if(!_pInstance)
-		_pInstance = new cMessageBoxInGame( device );
 }
 
 cMessageBoxInGame* cMessageBoxInGame::GetInstance()
 {
 	if(!_pInstance)
-		exit( EXIT_FAILURE );
+		_pInstance = new cMessageBoxInGame();
 
 	return _pInstance;
 }
 
-void cMessageBoxInGame::Update( IrrlichtDevice* device )
+void cMessageBoxInGame::Update()
 {
 	int realHeight = _vMsgList.size() * _nMsgOffset;
 	if( ++_nStartHeight > realHeight )
@@ -38,6 +31,9 @@ void cMessageBoxInGame::Update( IrrlichtDevice* device )
 
 void cMessageBoxInGame::Draw( IrrlichtDevice* device )
 {
+	//if(!_pFont)
+		_pFont = device->getGUIEnvironment()->getFont("../resources/fonts/larabie08_w.png");
+
 	device->getVideoDriver()->draw2DRectangle(
 		video::SColor( _nCurrentColor, 0, 0, 0 ),
 		core::rect<s32>(	(WIN_WIDTH/2) - (WIDTH/2), WIN_HEIGHT - HEIGHT, 
@@ -66,7 +62,7 @@ void cMessageBoxInGame::AddMessage( const char* text )
 	_nCurrentColor = _nFlashColor;
 	_vMsgList.push_back( core::stringw(text) );
 
-	int maxSize = HEIGHT / _nMsgOffset;
+	unsigned int maxSize = HEIGHT / _nMsgOffset;
 
 	if( _vMsgList.size() > maxSize )
 	{

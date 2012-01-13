@@ -1,11 +1,15 @@
 #ifndef _SOLDIER_H_
 #define _SOLDIER_H_
 
+#define PIXELS_PER_MAPSQUARE 10
+
 #include <iostream>
 #include <irrlicht.h>
 #include <vector>
 #include "cAISettings.h"
 #include "cSoldierData.h"
+
+#define PIXEL_PER_MAPSQUARE 10
 
 using namespace irr;
 using namespace core;
@@ -21,7 +25,7 @@ public:
 	void		SetUpdateFrequency( u32 newFrequency ){ _nUpdateFrequency = newFrequency; };
 
 	vector2d<s32>					GetPosition(){ return _pSoldierData->GetPosition(); };
-	std::vector<vector2d<s32>>	GetPath(){ return _pSoldierData->GetPath(); };
+	std::vector<vector2d<s32>>		GetPath(){ return _pSoldierData->GetPath(); };
 	cAISettings*					GetAISettings(){ return _pAISettings; };
 
 	void ClearPath(){ _pSoldierData->ClearPath(); };
@@ -38,7 +42,6 @@ private:
 
 	cSoldierData*						_pSoldierData;
 	cAISettings*						_pAISettings;
-
 };
 
 #endif

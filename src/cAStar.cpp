@@ -1,21 +1,23 @@
 #include "cAStar.h"
 
-cAStar::cAStar( std::vector< std::vector<int> > map, std::vector<irr::core::vector2d<irr::s32>> units_list )
+cAStar::cAStar( std::vector< std::vector<int> > map, std::vector<vector2d<s32>> units_list )
 {
 	std::vector<int> tmp;
 	for( unsigned int col = 0; col < map.size(); ++col )
 		for( unsigned int row = 0; row < map[0].size(); ++row )
 		{
 			_prgPathMap[col][row] = new cAStarNode( 
-				irr::core::vector2d<irr::s32>(col, row), 
+				vector2d<s32>(col, row), 
 				map[col][row] == cMap::WALKABLE ); 
 		}
-
-		_prgPathMap[units_list[0].X][units_list[0].Y]->set_walkable( false );
+		vector2d<s32> unitPos;
+		unitPos = cMapPositionHelper::PixelToSquarePos( units_list[0] );
+		std::cout << unitPos.X << ", " << unitPos.Y << "\n";
+		_prgPathMap[unitPos.X][unitPos.Y]->set_walkable( false );
 		//_prgPathMap[units_list[1].X][units_list[1].Y]->set_walkable( false );
 }
 
-std::vector<irr::core::vector2d<irr::s32>> cAStar::GetBestPath( irr::core::vector2d<irr::s32> start_pos, irr::core::vector2d<irr::s32> goal_pos )
+std::vector<vector2d<s32>> cAStar::GetBestPath( vector2d<s32> start_pos, vector2d<s32> goal_pos )
 {	
 	//std::cout << "Calculating new path to " << start_pos << " using A*\n";
 
@@ -27,11 +29,11 @@ std::vector<irr::core::vector2d<irr::s32>> cAStar::GetBestPath( irr::core::vecto
 	_rgHScore[start_pos.X][start_pos.Y] = _heuristicEstimateOfDistance( start_pos, goal_pos );
 	_rgFScore[start_pos.X][start_pos.Y] = _rgHScore[start_pos.X][start_pos.Y];
 
-	irr::core::vector2d<irr::s32> current_node_coord;
-	std::vector<irr::core::vector2d<irr::s32>> neighbor_list;
+	vector2d<s32> current_node_coord;
+	std::vector<vector2d<s32>> neighbor_list;
 	bool tentative_is_better;
 
-	irr::core::vector2d<irr::s32> y_node_coord;
+	vector2d<s32> y_node_coord;
 
 	while (!_vOpenList.empty())
 	{
@@ -49,7 +51,7 @@ std::vector<irr::core::vector2d<irr::s32>> cAStar::GetBestPath( irr::core::vecto
 		_vClosedList.push_back(current_node_coord);
 
 		//Remove from open_list
-		int tmpPos;
+		int tmpPos = 0;
 		for ( unsigned int i = 0; i < _vOpenList.size(); ++i)
 		{
 			if(_vOpenList[i] == current_node_coord)
@@ -62,7 +64,7 @@ std::vector<irr::core::vector2d<irr::s32>> cAStar::GetBestPath( irr::core::vecto
 		neighbor_list = _getNeighbors( current_node_coord );
 
 		//Process all neighbors
-		for(std::vector<irr::core::vector2d<irr::s32>>::const_iterator y_node_coord = neighbor_list.begin(); y_node_coord != neighbor_list.end(); ++y_node_coord )
+		for(std::vector<vector2d<s32>>::const_iterator y_node_coord = neighbor_list.begin(); y_node_coord != neighbor_list.end(); ++y_node_coord )
 		{
 			if( !_isCoordInClosedList( (*y_node_coord) ) )
 			{
@@ -102,13 +104,13 @@ std::vector<irr::core::vector2d<irr::s32>> cAStar::GetBestPath( irr::core::vecto
 	return _vCompletePath;
 }
 
-int cAStar::_heuristicEstimateOfDistance ( irr::core::vector2d<irr::s32> start, irr::core::vector2d<irr::s32> goal)
+int cAStar::_heuristicEstimateOfDistance ( vector2d<s32> start, vector2d<s32> goal)
 {
 	//Calculate manhattan distance
 	return abs(start.X - goal.X + start.Y - goal.Y);
 }
 
-double cAStar::_distanceBetween (irr::core::vector2d<irr::s32> coord_1, irr::core::vector2d<irr::s32> coord_2 )
+double cAStar::_distanceBetween (vector2d<s32> coord_1, vector2d<s32> coord_2 )
 {
 	//Calculate the "real" distance. 10 if side by side, 14 if diagonal
 	if( coord_1.X == coord_2.X)
@@ -119,11 +121,11 @@ double cAStar::_distanceBetween (irr::core::vector2d<irr::s32> coord_1, irr::cor
 		return floor( 10 * abs( sqrt( pow((double)coord_1.X - coord_2.X, 2) + pow((double)coord_1.Y - coord_2.Y, 2))));
 }
 
-irr::core::vector2d<irr::s32> cAStar::_getLowestFInOpenList()
+vector2d<s32> cAStar::_getLowestFInOpenList()
 {
-	irr::core::vector2d<irr::s32> lowest_f = _vOpenList[0];
+	vector2d<s32> lowest_f = _vOpenList[0];
 
-	for(std::vector<irr::core::vector2d<irr::s32>>::const_iterator it = _vOpenList.begin(); it != _vOpenList.end(); ++it)
+	for(std::vector<vector2d<s32>>::const_iterator it = _vOpenList.begin(); it != _vOpenList.end(); ++it)
 	{
 		if( _rgFScore[(*it).X][(*it).Y] <
 			_rgFScore[lowest_f.X][lowest_f.Y] )
@@ -132,37 +134,37 @@ irr::core::vector2d<irr::s32> cAStar::_getLowestFInOpenList()
 	return lowest_f;
 }
 
-bool cAStar::_isCoordInCompletePath( irr::core::vector2d<irr::s32> coord )
+bool cAStar::_isCoordInCompletePath( vector2d<s32> coord )
 {
-	for(std::vector<irr::core::vector2d<irr::s32>>::const_iterator it = _vCompletePath.begin(); it != _vCompletePath.end(); ++it)
+	for(std::vector<vector2d<s32>>::const_iterator it = _vCompletePath.begin(); it != _vCompletePath.end(); ++it)
 		if( *it == coord )
 			return true;
 
 	return false;
 }
-bool cAStar::_isCoordInOpenList( irr::core::vector2d<irr::s32> coord )
+bool cAStar::_isCoordInOpenList( vector2d<s32> coord )
 {
-	for(std::vector<irr::core::vector2d<irr::s32>>::const_iterator it = _vOpenList.begin(); it != _vOpenList.end(); ++it)
+	for(std::vector<vector2d<s32>>::const_iterator it = _vOpenList.begin(); it != _vOpenList.end(); ++it)
 		if( (*it) == coord )
 			return true;
 
 	return false;
 }
-bool cAStar::_isCoordInClosedList( irr::core::vector2d<irr::s32> coord )
+bool cAStar::_isCoordInClosedList( vector2d<s32> coord )
 {
-	for(std::vector<irr::core::vector2d<irr::s32>>::const_iterator it = _vClosedList.begin(); it != _vClosedList.end(); ++it)
+	for(std::vector<vector2d<s32>>::const_iterator it = _vClosedList.begin(); it != _vClosedList.end(); ++it)
 		if( (*it) == coord )
 			return true;
 
 	return false;
 }
 
-void cAStar::_reconstuctPath(irr::core::vector2d<irr::s32> goalNode)
+void cAStar::_reconstuctPath(vector2d<s32> goalNode)
 {
 	//Build a list (complete_path) by taking the parent of goal and follow the linked list through the parentnode
 	_vCompletePath.clear();
 	bool found_start = false;
-	irr::core::vector2d<irr::s32> tmp_coord = _posGoal;
+	vector2d<s32> tmp_coord = _posGoal;
 	while( !found_start && _prgPathMap[tmp_coord.X][tmp_coord.Y]->get_parent() != NULL)
 	{
 		if( tmp_coord.X == _posStart.X && 
@@ -181,9 +183,9 @@ void cAStar::_reconstuctPath(irr::core::vector2d<irr::s32> goalNode)
 	}
 }
 
-std::vector<irr::core::vector2d<irr::s32>> cAStar::_getNeighbors(irr::core::vector2d<irr::s32> coordinate)
+std::vector<vector2d<s32>> cAStar::_getNeighbors(vector2d<s32> coordinate)
 {
-	std::vector<irr::core::vector2d<irr::s32>> tmp_list;
+	std::vector<vector2d<s32>> tmp_list;
 	cAStarNode* tmp_node;
 
 	//Check diagonals

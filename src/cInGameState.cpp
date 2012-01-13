@@ -17,7 +17,6 @@ void cInGameState::Init( IrrlichtDevice* device )
 	}
 
 	_fCamZoom = 0;
-	cMessageBoxInGame::InitInstance( device );
 
 	_pVideoDriver = device->getVideoDriver();
 	_pSceneManager = device->getSceneManager();
@@ -61,20 +60,20 @@ void cInGameState::Init( IrrlichtDevice* device )
 			_ppNodes[c][r] = _pSceneManager->addCubeSceneNode();
 			if( typemap[c][r] == map.WALL )
 			{
-				_ppNodes[c][r]->setPosition( core::vector3df( -c*10, -r*10, 10 ) );
+				_ppNodes[c][r]->setPosition( core::vector3df( (f32)-c*10, (f32)-r*10, 10 ) );
 				_ppNodes[c][r]->setMaterialTexture(0, _pWall);
 			}
 			else if( typemap[c][r] == map.WALKABLE )
 			{
-				_ppNodes[c][r]->setPosition( core::vector3df( -c*10, -r*10, 0 ) );
+				_ppNodes[c][r]->setPosition( core::vector3df( (f32)-c*10, (f32)-r*10, 0 ) );
 				_ppNodes[c][r]->setMaterialTexture(0, _pGround);
 			}
 			_ppNodes[c][r]->setMaterialFlag(video::EMF_LIGHTING, false);
 		}
 
 	MoveCamera( 
-		map.GetPlayer01Pos().X * 10, 
-		map.GetPlayer01Pos().Y * 10, 
+		map.GetPlayer01Pos().X, 
+		map.GetPlayer01Pos().Y, 
 		0 );
 
 	cMessageBoxInGame::GetInstance()->AddMessage( "Game started (in pause mode)." );
@@ -100,8 +99,8 @@ void cInGameState::Update( IrrlichtDevice* device )
 		}
 	}
 
-	double delta = 5;
-	irr::core::vector3df tmpPos;
+	f32 delta = 5;
+	core::vector3df tmpPos;
 	f32 zDelta = _fCamZoom - _pEventReceiver->MouseState.MouseWheelDelta*10;
 
 	if( _pEventReceiver->IsAnyKeyDown() || _pEventReceiver->GetMouseState().IsButtonPressed() )
@@ -112,13 +111,13 @@ void cInGameState::Update( IrrlichtDevice* device )
 			{
 				tmpPos = _ppNodes[c][r]->getPosition();
 				
-				if( _pEventReceiver->IsKeyDown( irr::KEY_KEY_W ) )
+				if( _pEventReceiver->IsKeyDown( KEY_KEY_W ) )
 					tmpPos.Y -= delta;
-				if( _pEventReceiver->IsKeyDown( irr::KEY_KEY_S ) )
+				if( _pEventReceiver->IsKeyDown( KEY_KEY_S ) )
 					tmpPos.Y += delta;
-				if( _pEventReceiver->IsKeyDown( irr::KEY_KEY_A ) )
+				if( _pEventReceiver->IsKeyDown( KEY_KEY_A ) )
 					tmpPos.X -= delta;
-				if( _pEventReceiver->IsKeyDown( irr::KEY_KEY_D ) )
+				if( _pEventReceiver->IsKeyDown( KEY_KEY_D ) )
 					tmpPos.X += delta;
 				tmpPos.Z -= zDelta;
 				
@@ -127,22 +126,23 @@ void cInGameState::Update( IrrlichtDevice* device )
 		}
 	}
 	tmpPos = _ppNodes[0][0]->getPosition();
-	tmpPos.X -= _pGameManager->GetPlayer(1)->GetPosition().X * 10;
-	tmpPos.Y -= _pGameManager->GetPlayer(1)->GetPosition().Y * 10;
+	tmpPos.X -= _pGameManager->GetPlayer(1)->GetPosition().X;
+	tmpPos.Y -= _pGameManager->GetPlayer(1)->GetPosition().Y;
 	if( map.GetMap()[0][0] == map.WALKABLE ) 
 		tmpPos.Z += 10;
+	
 	_pChar01Node->setPosition(tmpPos);
 
 	tmpPos = _ppNodes[0][0]->getPosition();
-	tmpPos.X -= _pGameManager->GetPlayer(2)->GetPosition().X * 10;
-	tmpPos.Y -= _pGameManager->GetPlayer(2)->GetPosition().Y * 10;
+	tmpPos.X -= _pGameManager->GetPlayer(2)->GetPosition().X;
+	tmpPos.Y -= _pGameManager->GetPlayer(2)->GetPosition().Y;
 	if( map.GetMap()[0][0] == map.WALKABLE ) 
 		tmpPos.Z += 10;
 	_pChar02Node->setPosition(tmpPos);
 
 	_fCamZoom = _pEventReceiver->MouseState.MouseWheelDelta*10;
 
-	if( _pEventReceiver->IsKeyDown( irr::KEY_ESCAPE ) )
+	if( _pEventReceiver->IsKeyDown( KEY_ESCAPE ) )
 		_bIsDone = true;
 
 	if( KeyJustPressed( KEY_SPACE ) )
@@ -160,7 +160,7 @@ void cInGameState::Update( IrrlichtDevice* device )
 		}
 	}
 
-	cMessageBoxInGame::GetInstance()->Update( device );
+	cMessageBoxInGame::GetInstance()->Update();
 
 	bool* tmpArray = _pEventReceiver->GetKeyDownArray();
 	for (u32 i=0; i<KEY_KEY_CODES_COUNT; ++i)
@@ -172,8 +172,8 @@ void cInGameState::Update( IrrlichtDevice* device )
 void cInGameState::Draw( IrrlichtDevice* device )
 {
 	//Line between soldiers
-	/*irr::core::vector3df pos01( _pChar01Node->getPosition() );
-	irr::core::vector3df pos02( _pChar02Node->getPosition() );
+	/*core::vector3df pos01( _pChar01Node->getPosition() );
+	core::vector3df pos02( _pChar02Node->getPosition() );
 	pos01.Z = pos01.Z - 20;
 	pos02.Z = pos02.Z - 20;
 	device->getVideoDriver()->draw3DLine( pos01, pos02, video::SColor(255, 0, 0, 255) );*/
@@ -199,7 +199,7 @@ void cInGameState::Draw( IrrlichtDevice* device )
 		core::rect<s32>(
 			WIN_WIDTH-250, 0, WIN_WIDTH, 30) );
 
-	float time = _nTimeElapsed / 1000.0;
+	float time = _nTimeElapsed / 1000.f;
 	core::stringw text(L"Elapsed time: ");
 	text.append( core::stringw( time ), 5 );
 	text += L" sec.";
@@ -233,7 +233,7 @@ void cInGameState::MoveCamera( int deltaX, int deltaY, int deltaZ )
 		tmp_list_.erase( tmp_list_.begin() );
 	}
 	
-	irr::core::vector3df tmpPos;
+	core::vector3df tmpPos;
 
 	for( int c = 0; c < MAP_COLS; ++c )
 		for( int r = 0; r < MAP_ROWS; ++r )
@@ -249,8 +249,8 @@ void cInGameState::MoveCamera( int deltaX, int deltaY, int deltaZ )
 
 
 	tmpPos = _ppNodes[0][0]->getPosition();
-	tmpPos.X -= map.GetPlayer01Pos().X * 10;
-	tmpPos.Y -= map.GetPlayer01Pos().Y * 10;
+	tmpPos.X -= map.GetPlayer01Pos().X;
+	tmpPos.Y -= map.GetPlayer01Pos().Y;
 	if( map.GetMap()[0][0] == map.WALKABLE ) 
 		tmpPos.Z += 10;
 	_pChar01Node->setPosition(tmpPos);

@@ -4,7 +4,7 @@ void cPreGameState::Init( IrrlichtDevice* device )
 {
 	std::cout << "Initiating pregame state.\n";
 	_bIsDone = false;
-	_posLastCheckpoint = _pGameManager->GetPlayer(1)->GetPosition();
+	_posLastCheckpoint = cMapPositionHelper::PixelToSquarePos( _pGameManager->GetPlayer(1)->GetPosition() );
 	topLeftCornerOfMap = position2d<s32>(30, 65);
 	tileSizeOfMap = 16;
 	//tileSizeOfMap = 1004/MAP_COLS;
@@ -130,7 +130,7 @@ void cPreGameState::Update( IrrlichtDevice* device )
 		else if( _pEventReceiver->getMouseState()->RightButtonDown )
 		{
 			_pGameManager->GetPlayer(1)->ClearPath();
-			_posLastCheckpoint = _pGameManager->GetPlayer(1)->GetPosition();
+			_posLastCheckpoint = cMapPositionHelper::PixelToSquarePos( _pGameManager->GetPlayer(1)->GetPosition() );
 		}
 	}
 	else if( context.stateToShow == SHOW_SETTINGS )
@@ -183,8 +183,8 @@ void cPreGameState::Draw( IrrlichtDevice* device )
 		int tmpX, tmpY;
 		vector2d<s32> currPos;
 		vector2d<s32> prevPos = vector2d<s32>(
-			topLeftCornerOfMap.X + _pGameManager->GetPlayer(1)->GetPosition().X*tileSizeOfMap + (float)tileSizeOfMap/2, 
-			topLeftCornerOfMap.Y + _pGameManager->GetPlayer(1)->GetPosition().Y*tileSizeOfMap + (float)tileSizeOfMap/2
+			topLeftCornerOfMap.X + cMapPositionHelper::PixelToSquarePos(_pGameManager->GetPlayer(1)->GetPosition()).X * tileSizeOfMap + (float)tileSizeOfMap/2, 
+			topLeftCornerOfMap.Y + cMapPositionHelper::PixelToSquarePos(_pGameManager->GetPlayer(1)->GetPosition()).Y * tileSizeOfMap + (float)tileSizeOfMap/2
 			);
 
 		std::vector< vector2d<s32> > tmpPathList = _pGameManager->GetPlayer(1)->GetPath();
@@ -199,8 +199,8 @@ void cPreGameState::Draw( IrrlichtDevice* device )
 			prevPos = currPos;
 		}
 
-		tmpX = topLeftCornerOfMap.X + _pGameManager->GetPlayer(1)->GetPosition().X * tileSizeOfMap;
-		tmpY = topLeftCornerOfMap.Y + _pGameManager->GetPlayer(1)->GetPosition().Y * tileSizeOfMap;
+		tmpX = topLeftCornerOfMap.X + cMapPositionHelper::PixelToSquarePos(_pGameManager->GetPlayer(1)->GetPosition()).X * tileSizeOfMap;
+		tmpY = topLeftCornerOfMap.Y + cMapPositionHelper::PixelToSquarePos(_pGameManager->GetPlayer(1)->GetPosition()).Y * tileSizeOfMap;
 		driver->draw2DImage( 
 			_pPlayer, 
 			rect<s32>( tmpX, tmpY, tmpX + tileSizeOfMap, tmpY + tileSizeOfMap ), 

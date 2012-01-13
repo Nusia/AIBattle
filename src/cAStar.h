@@ -6,12 +6,16 @@
 
 #include "cAStarNode.h"
 #include "cMap.h"
+#include "cMapPositionHelper.h"
+
+using namespace irr;
+using namespace core;
 
 class cAStar
 {
 public:
-	cAStar( std::vector< std::vector<int> > map, std::vector<irr::core::vector2d<irr::s32>> units_list );
-	std::vector<irr::core::vector2d<irr::s32>> GetBestPath( irr::core::vector2d<irr::s32> start_pos, irr::core::vector2d<irr::s32> goal_pos );
+	cAStar( std::vector< std::vector<int> > map, std::vector<vector2d<s32>> units_list );
+	std::vector<vector2d<s32>> GetBestPath( vector2d<s32> start_pos, vector2d<s32> goal_pos );
 
 private:
 	int _rgGScore[MAP_COLS][MAP_ROWS];
@@ -20,22 +24,23 @@ private:
 
 	cAStarNode* _prgPathMap[MAP_COLS][MAP_ROWS];
 
-	std::vector<irr::core::vector2d<irr::s32>> _vClosedList;
-	std::vector<irr::core::vector2d<irr::s32>> _vOpenList;
-	std::vector<irr::core::vector2d<irr::s32>> _vCompletePath;
+	std::vector<vector2d<s32>> _vClosedList;
+	std::vector<vector2d<s32>> _vOpenList;
+	std::vector<vector2d<s32>> _vCompletePath;
 
-	irr::core::vector2d<irr::s32> _posStart;
-	irr::core::vector2d<irr::s32> _posGoal;
+	vector2d<s32> _posStart;
+	vector2d<s32> _posGoal;
 
 	int _nStartTime;
 
-	int			_heuristicEstimateOfDistance ( irr::core::vector2d<irr::s32> start, irr::core::vector2d<irr::s32> goal);
-	double		_distanceBetween ( irr::core::vector2d<irr::s32> coord_1, irr::core::vector2d<irr::s32> coord_2 );
-	irr::core::vector2d<irr::s32>	_getLowestFInOpenList();
-	bool		_isCoordInCompletePath( irr::core::vector2d<irr::s32> coord );
-	bool		_isCoordInOpenList( irr::core::vector2d<irr::s32> coord );
-	bool		_isCoordInClosedList( irr::core::vector2d<irr::s32> coord );
-	void		_reconstuctPath(irr::core::vector2d<irr::s32> goalNode);
-	std::vector<irr::core::vector2d<irr::s32>> 
-				_getNeighbors(irr::core::vector2d<irr::s32> coordinate);
+	int			_heuristicEstimateOfDistance ( vector2d<s32> start, vector2d<s32> goal);
+	double		_distanceBetween ( vector2d<s32> coord_1, vector2d<s32> coord_2 );
+	vector2d<s32>	_getLowestFInOpenList();
+	bool		_isCoordInCompletePath( vector2d<s32> coord );
+	bool		_isCoordInOpenList( vector2d<s32> coord );
+	bool		_isCoordInClosedList( vector2d<s32> coord );
+	void		_reconstuctPath(vector2d<s32> goalNode);
+	std::vector<vector2d<s32>> 
+				_getNeighbors(vector2d<s32> coordinate);
 };
+

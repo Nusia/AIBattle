@@ -3,7 +3,6 @@
 void cGameManager::Init() 
 {
 	_pMap = new cMap();
-	_pMap->Init();
 	
 	_pPlayer01 = new cSoldier();
 	_pPlayer02 = new cSoldier();

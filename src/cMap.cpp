@@ -2,10 +2,6 @@
 
 cMap::cMap()
 {
-}
-//
-void cMap::Init()
-{
 	std::cout << "Initiating map.\n";
 	_player01Pos = irr::core::vector2d<irr::s32>( 0, 0 );
 	_player02Pos = irr::core::vector2d<irr::s32>( 0, 1 );
@@ -14,20 +10,12 @@ void cMap::Init()
 
 	std::cout << "Map ready.\n";
 }
-//
-void cMap::Update()
-{
-}
-//
-void cMap::Draw( irr::IrrlichtDevice* device )
-{
-}
-//
+
 bool cMap::IsPosWalkable( irr::core::vector2d<irr::s32> pos )
 {
 	return _vMap[pos.X][pos.Y] == WALKABLE;
 }
-//
+
 void cMap::_loadMap()
 {
 	std::cout << "Loading saved map.\n";
@@ -47,14 +35,14 @@ void cMap::_loadMap()
 				c -= 48;
 				if ( c == PLAYER01 )
 				{
-					_player01Pos.X = col;
-					_player01Pos.Y = row;
+					_player01Pos.X = col*PIXELS_PER_MAPSQUARE;
+					_player01Pos.Y = row*PIXELS_PER_MAPSQUARE;
 					tmp.push_back( 0 );
 				}
 				else if ( c == PLAYER02 )
 				{
-					_player02Pos.X = col;
-					_player02Pos.Y = row;
+					_player02Pos.X = col*PIXELS_PER_MAPSQUARE;
+					_player02Pos.Y = row*PIXELS_PER_MAPSQUARE;
 					tmp.push_back( 0 );
 				}
 				else
